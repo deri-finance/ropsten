@@ -257,6 +257,7 @@ $(function () {
             return;
         }
         contract.tradeWithMargin(margin,volume).then(res=>{
+            console.log(res)
             if(!res.status){
                 alert('Place  order failed')
             }
