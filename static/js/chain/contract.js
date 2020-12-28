@@ -167,6 +167,7 @@ class Contract {
 
     /**///已测
     mint(account, amount) {
+        console.log(amount)
         amount = this.format(new BigNumber(amount).multipliedBy(this._BONE));
         console.log("amount", amount);
         return this.transact(this.btokenContract, "mint", [account, amount]).then((ret) => {

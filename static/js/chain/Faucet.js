@@ -1,63 +1,35 @@
 $(function () {
-    const contracts = new Contracts();
-    let MAX_TEST_COIN_NUM = 10 ** 8;
-    let SINGLE_COIN_NUM = 10 ** 5;
-    initialize();
-
-    function initialize() {
-        contracts.init()
-            .then((ret) => {
-            })
-            .catch((err) => {
-                console.log(err);
-            })
-    }
-
-    $("#getTestCoin").off('click').on('click', getTestCoin);
-
-    function getTestCoin() {
-        if (!contracts.isWalletConnected()) {
-            alert('Please Connect MetaMask wallet first!');
-            return;
-        }
-        let button = $("#getTestCoin");
-        disableButton(button);
-        let params = {
-            from: contracts.account,
-            value: 0,
-        }
-        contracts.getBalanceOf(contracts.btokenContract, contracts.account).then((ret) => {
-            let balance = new BigNumber(ret / BONE);
-            let amount = new BigNumber(SINGLE_COIN_NUM * BONE);
-            let account = contracts.account;
-            amount = amount.toFormat().replaceAll(",", "")
-            if (balance.lt(new BigNumber(MAX_TEST_COIN_NUM))) {
-                return contracts.mint(account, amount, params).then((ret) => {
-                    console.log("ret");
-                    showBalanceOf();
-                    enableButton(button);
-                }).catch((err) => {
-                    console.log(err);
-                });
+    const contract = new Contract();
+    contract._initConfig().then((res) => {
+        connectwallet();
+    });
+    function connectwallet() {
+        contract.connectWallet().then(res => {
+            console.log(res);
+            if (res) {
+                let account = res[0];
+                $('#connect-wallet').hide();
+                $(".id").text(account.slice(0, 6) + '***' + account.slice(account.length - 4, account.length));
             } else {
-                enableButton(button);
-                alert("超出最大数量");
+                alert('connection fail')
             }
-        }).catch((err) => {
-            enableButton(button);
+        }).catch(err => {
+            console.log(err)
         })
-    }
 
-    // 显示信息
-    function showBalanceOf() {
-        contracts.getBalanceOf(contracts.btokenContract, contracts.account).then((ret) => {
-            console.log("设置余额显示");
-            let balance = ret.dividedBy(BONE);
-            $("#balance").text(balance.toFixed(2));
-            $("#my-balance").text(balance.toFixed(2));
-            $("#all-balance").text(balance.toFixed(2));
-        }).catch((err) => {
-            $("#all-balance").text("----");
-        })
+    }
+    $('#obtain').on('click',add);
+    function add(){
+        let address = $('.form-control').val()
+        if(address){
+            try {
+                let res = contract.mint(address,10000)
+                alert('You get 10,000 USDT')
+                $('.form-control').val('')
+            } catch (error) {
+                console.log(error)
+            }
+        }
+        
     }
 })
