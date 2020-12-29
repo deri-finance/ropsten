@@ -131,6 +131,8 @@ $(function () {
             console.log(res)
             enableButton(button)
             reset();
+       }).catch(err=>{
+           console.log(err)
        })
     }
     $('#removeall').on('click',function(){

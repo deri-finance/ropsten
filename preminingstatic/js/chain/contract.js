@@ -278,7 +278,6 @@ class Contract {
     checkPoolLiquidity(tradeVolume) {
         tradeVolume = new BigNumber(tradeVolume);
         return Promise.all([
-            this._getPrice(),
             this._getStateValues(),
             this._getPositionArgs()
         ]).then(ret => {
@@ -331,18 +330,15 @@ class Contract {
         let funcName = "addLiquidity(uint256)";
         margin = this.format(new BigNumber(margin).multipliedBy(this._ONE));
         console.log("margin", margin);
-        return Promise.all([this._getPrice()]).then(ret => {
-            let params = [
-                margin
-            ]
-            console.log(params);
-
-            return this.transact(this.poolContract, funcName, params).then((ret) => {
-                console.log("添加流动性成功");
-                return ret;
-            }).catch((err) => {
-                console.log(err);
-            })
+        let params = [
+            margin
+        ]
+        console.log(params);
+        return this.transact(this.poolContract, funcName, params).then((ret) => {
+            console.log("添加流动性成功");
+            return ret;
+        }).catch((err) => {
+            console.log(err);
         })
     };
 
@@ -398,18 +394,14 @@ class Contract {
         let funcName = "removeLiquidity(uint256)";
         volume = this.format(new BigNumber(volume).multipliedBy(this._ONE));
         console.log("volume", volume);
-        return Promise.all([this._getPrice()]).then(ret => {
-            console.log(ret);
             let params = [
                 volume
             ]
-            
             return this.transact(this.poolContract, funcName, params).then(ret => {
                 return true;
             }).catch(err => {
                 return false;
             })
-        })
     };
 
     /*获取当前trader的流动性*/
@@ -547,13 +539,13 @@ class Contract {
     }
 
     perLiquidityShare() {
-        return Promise.all([this._getStateValues(), this._getPrice(), this._getTotalSupply()]).then(ret => {
+        return Promise.all([this._getStateValues(),  this._getTotalSupply()]).then(ret => {
             // let price = this.dividedByUNIT(new BigNumber(ret[1]["price"]));
             let liquidity = this.dividedByUNIT(ret[0]);
             console.log(this.format(liquidity))
             // let tradersNetCost = this.dividedByUNIT(args["tradersNetCost"]);
             // let tradersNetVolume = this.dividedByUNIT(args["tradersNetVolume"]);
-            let totalSupply = this.dividedByUNIT(ret[2]);
+            let totalSupply = this.dividedByUNIT(ret[1]);
             console.log(this.format(totalSupply))
             // let poolDynamicEquity = liquidity.plus(tradersNetCost).minus(tradersNetVolume.multipliedBy(price).multipliedBy(this.multiplier));
             let poolDynamicEquity = liquidity;
