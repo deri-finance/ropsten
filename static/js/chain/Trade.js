@@ -7,6 +7,33 @@ $(function () {
     $('#trade_close').on('click',close);
     $('.bi-chevron-down').on('click',marginshow);
     $('.bi-chevron-up').on('click',marginhide);
+    $('#closeposition').on('click',closeposition);
+    function closeposition(){
+        let button = $('#closeposition');
+        disableButton(button)
+        contract.closePosition().then(res=>{
+            if(res=='0'){
+                alert('Not to take positions');
+                reset();
+                enableButton(button);
+                return
+            }else if(res=='1'){
+                alert('Position 0 does not need to be closed');
+                reset();
+                enableButton(button);
+                return
+            }else{
+                reset();
+                enableButton(button);
+                return
+            }
+        }).catch(err=>{
+            alert('Unwind failure')
+            reset();
+            enableButton(button);
+            return;
+        });
+    }
     function marginshow(){
         $('#optional').show();
         $('.bi-chevron-up').show();
@@ -76,7 +103,7 @@ $(function () {
         
     }
     // setTimeout(tradeEvent,1000)
-    setInterval(tradeEvent,5000)
+    // setInterval(tradeEvent,5000)
     function isUnlock(){
         contract.getAllowance().then(res=>{
             console.log(res)
@@ -595,7 +622,6 @@ $(function () {
         let depositMargininput = $('#depositMargin').val();
         let button = $("#depositMarginButton");
         let isWalletConnected = contract.isWalletConnected();
-        
         if(!isWalletConnected){
             alert('Please Connect MetaMask wallet first!');
             return;

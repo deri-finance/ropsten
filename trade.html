@@ -486,9 +486,9 @@
                                                 PLACE ORDER
                                             </button>
                                         </div>
-                                        <div id="Unlock" class="col-12 ml-0 pl-0" style="display: block;">
+                                        <div  class="col-12 ml-0 pl-0" style="display: block;">
                                             <button 
-                                                class="btn btn-success btn-sm btn-block" id="place-order-sell">
+                                                class="btn btn-success btn-sm btn-block" id="Unlock">
                                                 <span class="spinner spinner-border spinner-border-sm"  style="display: none;"></span>
                                                     Unlock
                                             </button>
@@ -498,8 +498,6 @@
                             </div>
                         </div>
                     </div>
-                    
-                    
                     <div class="card card-bg mt-2 " style="margin-left: 1.5rem;">
                         <div style="margin-left: 23px;height: 3rem;">
                             Optional 
@@ -511,10 +509,13 @@
                               </svg>
                         </div>
                         
-                        <div class="card-body" id='optional' style="display: none;">
+                        <div class="card-body" id='optional' style="display: none;width: 28.3rem;">
                             <div class="mt-2" style="margin-bottom: 20px;">
                                 <div class="w-100 text-center mt-2 mb-2">
-                                    <button type="button" class="btn btn-danger">Close Position</button>
+                                    <button type="button" id="closeposition" class="btn btn-danger">
+                                        <span class="spinner spinner-border spinner-border-sm" role="status"
+                                                aria-hidden="true" style="display: none;"></span>
+                                        Close Position</button>
                                 </div>
                             </div>
                             <div class="mt-2" >

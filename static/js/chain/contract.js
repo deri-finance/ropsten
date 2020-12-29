@@ -167,7 +167,6 @@ class Contract {
 
     /**///已测
     mint(account, amount) {
-        console.log(amount)
         amount = this.format(new BigNumber(amount).multipliedBy(this._BONE));
         console.log("amount", amount);
         return this.transact(this.btokenContract, "mint", [account, amount]).then((ret) => {
@@ -520,40 +519,47 @@ class Contract {
             let fee = curCost.abs().multipliedBy(this.feeRatio);
             let existMargin = margin;
             let realizedCost = new BigNumber(0);
-            margin = margin.minus(funding).minus(fee);
+            margin = margin.minus(funding).minus(fee); //margin -= funding + fee
             if ((volume.gte(zero) && tradeVolume.gte(zero)) || (volume.lte(zero) && tradeVolume.lte(zero))) {
 
-            } else if (volume.abs().gte(tradeVolume.abs())) {
-                realizedCost = curCost.multipliedBy(tradeVolume.abs()).dividedBy(volume.abs()).plus(cost);
+            } else if (volume.abs().lte(tradeVolume.abs())) {
+                realizedCost = curCost.multipliedBy(volume.abs()).dividedBy(tradeVolume.abs()).plus(cost);
             } else {
-                realizedCost = cost.multipliedBy(tradeVolume.abs()).dividedBy(volume).plus(curCost);//cost * abs(tradeVolume) / abs(volume) + curCost
+                realizedCost = cost.multipliedBy(tradeVolume.abs()).dividedBy(volume.abs()).plus(curCost);//cost * abs(tradeVolume) / abs(volume) + curCost
             }
             // volume += tradeVolume
             // cost = cost + curCost - realizedCost
             // tradersNetVolume += tradeVolume
             // tradersNetCost += curCost - realizedCost
             // liquidity += funding + fee + realizedCost
-            volume = volume.plus(tradeVolume);
-            cost = cost.plus(curCost).minus(realizedCost);
+            volume = volume.plus(tradeVolume);//volume += tradeVolume
+            cost = cost.plus(curCost).minus(realizedCost);//cost = cost + curCost - realizedCost
             console.log("实现之后需要的cost,交易需要的curCost,实现需要的Cost", this.format(cost), this.format(curCost), this.format(realizedCost));
-            margin = margin.minus(realizedCost);
+            margin = margin.minus(realizedCost);//margin -= realizedCost
             console.log("最终的仓位", this.format(volume));
             let value = volume.multipliedBy(price).multipliedBy(this.multiplier);//volume * price * multiplier
             // 1. ((margin + amount - (funding + fee) - realizedCost) + value - cost) / abs(value) >= minInitialMarginRatio => amount >= AAA
-            //amount>value.abs().multipliedBy(this.minInitialMarginRatio)-value+cost+realizedCost-margin+(funding + fee)
             let requirementAllMargin = volume.abs().multipliedBy(price).multipliedBy(this.minInitialMarginRatio).multipliedBy(this.multiplier).plus(fee);
             console.log("实现之后需要的requirementAllMargin", this.format(requirementAllMargin));
             console.log("输入的amount", this.format(amount));
+
+            //(margin + value - cost) / abs(value)>=minMaintenanceMarginRatio ====> margin>= (abs(volume)*minMaintenanceMarginRatio-volume)*price*multiplier + cost
+            let finalMargin = value.abs().multipliedBy(this.minInitialMarginRatio).minus(value).plus(cost);
+            console.log("finalMargin, value, cost", this.format(finalMargin), this.format(value), this.format(cost));
+
+            let requirementMinAmount = finalMargin.plus(realizedCost).plus(funding).plus(fee);
             let minAmount = value.abs().multipliedBy(this.minInitialMarginRatio).minus(margin).plus(funding).plus(fee).plus(realizedCost).minus(value).plus(cost);
-            console.log("还需要最小的保证金", this.format(minAmount));
+            console.log("还需要最小的保证金", this.format(existMargin.minus(requirementAllMargin).lte(new BigNumber(0)) ? existMargin.minus(requirementAllMargin).abs() : new BigNumber("0")));
+            console.log("还需要最小的保证金requirementMinAmount", this.format(requirementMinAmount));
+            console.log("还需要最小的保证金minAmount", this.format(minAmount.abs()));
+            // console.log("还需要冲入的保证金", this.format(requirementMinAmount.minus(existMargin)));
             // 当前保证金+当前输入的保证金-最终需要的保证金>0即可
+            console.log({"minAmount": this.format(existMargin.minus(requirementAllMargin).lte(new BigNumber(0)) ? existMargin.minus(requirementAllMargin).abs() : new BigNumber("0"))});
             if (existMargin.plus(amount).minus(requirementAllMargin).gte(new BigNumber(0))) {
                 return true;
             } else {
-                return {"minAmount": this.format(minAmount)};
+                return {"minAmount": this.format(existMargin.minus(requirementAllMargin).lte(new BigNumber(0)) ? existMargin.minus(requirementAllMargin).abs() : new BigNumber("0"))};
             }
-            // console.log("最小minAmount，最终的amount", this.format(minAmount), this.format(amount));
-            // if (amount.lte(minAmount)) return {"minAmount": this.format(minAmount)};
         }).catch(err => {
             console.log("计算最小amount失败", err);
             return false;
@@ -585,20 +591,20 @@ class Contract {
 
             let realizedCost = new BigNumber(0);
             if ((volume.gte(zero) && tradeVolume.gte(zero)) || (volume.lte(zero) && tradeVolume.lte(zero))) {
-            } else if (volume.abs().gte(tradeVolume.abs())) {
-                realizedCost = curCost.multipliedBy(tradeVolume.abs()).dividedBy(volume.abs()).plus(cost);
+            } else if (volume.abs().lte(tradeVolume.abs())) {
+                realizedCost = curCost.multipliedBy(volume.abs()).dividedBy(tradeVolume.abs()).plus(cost);
             } else {
-                realizedCost = cost.multipliedBy(tradeVolume.abs()).dividedBy(volume).plus(curCost);//cost * abs(tradeVolume) / abs(volume) + curCost
+                realizedCost = cost.multipliedBy(tradeVolume.abs()).dividedBy(volume.abs()).plus(curCost);//cost * abs(tradeVolume) / abs(volume) + curCost
             }
             let tradersNetVolume = this.dividedByUNIT(new BigNumber(stateValues["tradersNetVolume"]));
             let tradersNetCost = this.dividedByUNIT(new BigNumber(stateValues["tradersNetCost"]));
             let liquidity = this.dividedByUNIT(new BigNumber(stateValues["liquidity"]));
-            tradersNetVolume = tradersNetVolume.plus(tradeVolume);
+            tradersNetVolume = tradersNetVolume.plus(tradeVolume);//tradersNetVolume += tradeVolume
             tradersNetCost = tradersNetCost.plus(curCost).minus(realizedCost);//tradersNetCost += curCost - realizedCost
             //liquidity += funding + fee + realizedCost
-            liquidity = liquidity.plus(funding).plus(fee).plus(realizedCost);
+            liquidity = liquidity.plus(funding).plus(fee).plus(realizedCost);//liquidity += funding + fee + realizedCost
             let value = tradersNetVolume.multipliedBy(new BigNumber(-1)).multipliedBy(price).multipliedBy(this.multiplier);//-tradersNetVolume * price * multiplier
-            console.log("value,tradersNetVolume", this.format(value), this.format(tradersNetVolume));
+            console.log("value,tradersNetVolume,tradeVolume", this.format(value), this.format(tradersNetVolume), this.format(tradeVolume));
             // value = -tradersNetVolume * price * multiplier
             // ratio = (liquidity + value + tradersNetCost) / abs(value)
             // ratio >= minPoolMarginRatio
@@ -1027,113 +1033,6 @@ class Contract {
         })
     };
 
-    /*计算可建仓位范围，网页显示*///已测
-    calVolume(marginInput = 0, leverage = 1) {
-        return Promise.all([this.calCurrentTraderVolume(marginInput, leverage), this.calInitAllVolume(), this.calNetVolume()]).then((ret) => {
-            console.log(ret);
-            let net_cur_volume = ret[2];
-            // 当前trader可以开仓的仓位大小
-            let cur_trader_max_buy_volume = ret[0][0];
-            let cur_trader_max_sell_volume = ret[0][1];
-            // tradersNetVolume为0时的可建仓位范围
-            let net_max_buy_volume = ret[1][0];
-            let net_max_sell_volume = ret[1][1];
-            net_max_buy_volume = net_max_buy_volume.minus(net_cur_volume);
-            net_max_sell_volume = net_max_sell_volume.minus(net_cur_volume);
-            console.log("net", this.format(net_max_buy_volume), this.format(net_max_sell_volume));
-            console.log("cur_trade", this.format(cur_trader_max_buy_volume), this.format(cur_trader_max_sell_volume));
-            console.log("neucur", this.format(net_cur_volume));
-            cur_trader_max_buy_volume = cur_trader_max_buy_volume.gte(net_max_buy_volume) ? net_max_buy_volume : cur_trader_max_buy_volume;
-            cur_trader_max_sell_volume = cur_trader_max_sell_volume.gte(net_max_sell_volume) ? cur_trader_max_sell_volume : net_max_sell_volume;
-            console.log(this.format(cur_trader_max_buy_volume), this.format(cur_trader_max_sell_volume.abs()));
-            return {
-                "buy_volume": cur_trader_max_buy_volume,
-                "sell_volume": cur_trader_max_sell_volume.abs()
-            }
-        }).catch((err) => {
-            console.log(err);
-        })
-    };
-
-    /*计算trader能创建仓位范围*/
-    calCurrentTraderVolume(marginInput, leverage) {
-        return Promise.all([this.exists(), this._getPrice()]).then((ret) => {
-            console.log(ret);
-            let exist = ret[0];
-            let price = ret[1]["price"];
-            let oracle_price = this.dividedByUNIT(price);
-            let multiplier = this.multiplier;
-            let minInitialMarginRatio = this.minInitialMarginRatio;
-            let margin2volumeRate = minInitialMarginRatio * oracle_price * multiplier;
-            console.log("minInitialMarginRatio * oracle_price * multiplier;",
-                this.format(minInitialMarginRatio), this.format(oracle_price), this.format(multiplier));
-            if (exist) {
-                console.log("已建仓")
-                return this._getPosition().then((positionInfo) => {
-                    console.log(positionInfo, price);
-
-                    let position = this.dividedByUNIT(positionInfo[1]);
-                    let currentMargin = this.dividedByUNIT(positionInfo[4]);
-                    // // 如果当前是空仓， 开空， 开多
-                    let margin = new BigNumber(marginInput);
-                    console.log(currentMargin, margin, margin2volumeRate);
-                    // 当前仓位为0时可以建的仓 (currentMargin+marginInput).divideBy(margin2volumeRate)
-                    let buy_volume = currentMargin.plus(margin).multipliedBy(new BigNumber(leverage)).dividedBy(margin2volumeRate);
-                    let sell_volume = currentMargin.plus(margin).multipliedBy(new BigNumber(leverage)).dividedBy(margin2volumeRate).multipliedBy(-1);
-                    console.log(buy_volume, sell_volume);
-                    buy_volume = buy_volume.minus(position);
-                    sell_volume = sell_volume.minus(position);
-                    console.log(parseInt(buy_volume), parseInt(sell_volume));
-                    return [(buy_volume), (sell_volume)];
-                }).catch((err) => {
-                    console.log(err)
-                })
-            } else {
-                try {
-                    // 未建过仓,同时 margin没有输入
-                    if (!marginInput) {
-                        console.log("未输入margin并且同时未建仓");
-                    } else {
-                        console.log("当前未建仓，但输入了保证金");
-                        // 计算volume数量
-                        // console.log(ret);
-                        let margin = new BigNumber(marginInput).multipliedBy(new BigNumber(leverage));
-                        let estimated = margin.dividedBy(margin2volumeRate);
-                        console.log("最大合约数", parseInt(estimated), estimated, this.format(new BigNumber(margin2volumeRate)));
-                        // return [(this.dividedByUNIT(estimated)), (this.dividedByUNIT(estimated).minus(-1))];
-                        return [estimated, estimated * -1];
-                    }
-                } catch (e) {
-                    console.log(e);
-                }
-            }
-        }).catch((err) => {
-        })
-    };
-
-    /*计算tradersNetVolume为0时的可建仓位范围*///已测
-    calInitAllVolume() {
-        // liquidity/price/multiplier/minPoolMarginRatio
-        return Promise.all([this._getPrice(), this._getStateValues()]).then((ret) => {
-            let price = ret[0]["price"];
-            let buy_volume = this.dividedByUNIT(ret[1].liquidity).dividedBy(this.dividedByUNIT(price)).dividedBy(this.multiplier).dividedBy(this.minPoolMarginRatio);
-            let sell_volume = this.dividedByUNIT(ret[1].liquidity).dividedBy(this.dividedByUNIT(price)).dividedBy(this.multiplier).dividedBy(this.minPoolMarginRatio).multipliedBy(-1);
-            console.log(buy_volume, sell_volume, [parseInt(buy_volume), parseInt(sell_volume)]);
-            return [(buy_volume), (sell_volume)];
-        }).catch((err) => {
-
-        })
-    };
-
-    /*获取链上的总仓位信息*///已测
-    calNetVolume() {
-        return this._getStateValues().then((ret) => {
-            return this.dividedByUNIT(ret.tradersNetVolume);
-        }).catch((err) => {
-
-        })
-    };
-
     //positionTokenContract
     /*从链上获取建仓仓位信息*///已测
     _getPosition() {
@@ -1202,7 +1101,7 @@ class Contract {
                 async: true,
                 type: 'get',
                 success: function (ret) {
-                    console.log(ret);
+                    // console.log(ret);
                     return ret;
                 },
                 error: function (err) {
@@ -1436,14 +1335,43 @@ class Contract {
 
     }
 
+    closePosition() {
+        let funcName = "tradeWithMargin(int256,uint256,uint256,uint256,uint8,bytes32,bytes32)";
+        // 0: 未建仓
+        // 1: 仓位为0
+        // 2：平仓成功
+        return Promise.all([this.exists()]).then(ret => {
+            if (!ret[0]) {
+                console.log("未建仓")
+                return 0;
+            } else {
+                return Promise.all([this._getPosition()]).then(ret => {
+                    let position = new BigNumber(ret[0][1]);
+                    if (this.format(position) == this.format(new BigNumber(0))) {
+                        console.log("仓位已经为0");
+                        return 1;
+                    } else {
+                        return Promise.all([this._getPrice()]).then(ret => {
+                            let _params = ret[0];
+                            let params = [
+                                this.format(position.multipliedBy(new BigNumber(-1))), 0, _params["timestamp"], _params["price"], _params["v"], _params["r"], _params["s"]
+                            ]
+                            return this.transact(this.poolContract, funcName, params).then(ret => {
+                                return 2;
+                            })
+                        }).catch(err => {
+                            console.log(err);
+                        })
+                    }
+                }).catch(err => {
+                    console.log(err);
+                })
+            }
+        }).catch(err => {
+            console.log(err);
+        })
+    }
 }
 
 let c = new Contract();
 c.connectWallet()
-
-/**
- *
- * 可建总仓位：netLiquidity/price/multiplier
- *
- *
- * */
