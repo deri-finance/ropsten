@@ -604,7 +604,7 @@ $(function () {
                         $('.short').text(margin);
                         console.log(margin,payment)
                         payment= margin+payment;
-                        payment = upFixed(payment,2)
+                        payment = upFixed(payment,3)
                         $('.modal_margin').text(margin)
                         $('.payment').text(payment)
                     }
@@ -612,7 +612,7 @@ $(function () {
                     margin = +$('#place-order-margin').val()
                     console.log(margin,payment)
                     payment= margin+payment;
-                    payment = upFixed(payment,2)
+                    payment = upFixed(payment,3)
                     $('.payment').text(payment)
                 }
             })
