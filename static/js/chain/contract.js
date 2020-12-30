@@ -236,6 +236,7 @@ class Contract {
         return this.call(this.poolContract, "getParameters").then((ret) => {
             //(multiplier, feeRatio, minPoolMarginRatio, minInitialMarginRatio, minMaintenanceMarginRatio, minAddLiquidity,
             // fundingRateCoefficient, minLiquidationReward, maxLiquidationReward, liquidationCutRatio, priceDelayAllowance)
+            console.log(ret)
             this.multiplier = this.dividedByUNIT(ret.multiplier);
             this.feeRatio = this.dividedByUNIT(ret.feeRatio);
             this.minPoolMarginRatio = this.dividedByUNIT(ret.minPoolMarginRatio);
