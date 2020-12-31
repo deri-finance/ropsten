@@ -330,7 +330,7 @@ $(function () {
             $('#resultlong').show();
             $('#long_close').show();
             $('#pengding').hide();
-            $('#exampleModal').modal('hide')
+            $('#modalshort').modal('hide')
             return;
         }
         if(+volume !== parseInt(volume)){
@@ -339,7 +339,7 @@ $(function () {
             $('#resultlong').show();
             $('#long_close').show();
             $('#pengding').hide();
-            $('#exampleModal').modal('hide')
+            $('#modalshort').modal('hide')
             return;
         }
         volume = -1 * volume;
