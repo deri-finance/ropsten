@@ -1,4 +1,3 @@
-
 $(function () {
     const contract = new Contract();
     var maxremobeLiquidity;
