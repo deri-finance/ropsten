@@ -6,7 +6,6 @@ $(function () {
         connectwallet();
     })
     function getblock(pooladdress){
-        setInterval(function(){
             $.ajax({
                 url:'https://mining.deri.finance/block',
                 type:"GET",
@@ -29,7 +28,6 @@ $(function () {
                     })
                 }
             })
-        },5000)
     }
     function  current(account,pooladdress){
         let dtime = new Date();
@@ -97,6 +95,9 @@ $(function () {
          })
         
     }
+    setInterval(function(){
+        getblock(contract._pool_address)
+    },5000)
     function perLiquidityShare(){
         contract.perLiquidityShare().then(res=>{
             if(res=='NaN'){
