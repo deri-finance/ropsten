@@ -1,0 +1,43 @@
+{
+  "oracleUrl": "https://oracle.deri.finance/price",
+
+  "addresses": [
+      {
+          "bToken": "0x8F038C454B6E68B2988706a1a5f78dE2C4634097",
+          "pToken": "0x02c9840fD044abFd58E9674ecc232e8b1F323fE8",
+          "lToken": "0xa2eFf409E6bA54176e01b35aA7deca643A31F849",
+          "pool": "0xE5a4fCd3CE3a824bF15D5FABd390cF44E83AbE8B"
+      },
+      {
+          "bToken": "0x7382B8013bAF81850d5D4d2B109bc184d9D12383",
+          "pToken": "0x07b5A3BC0c4EeC1C9e3f4Db8938a16728ed38462",
+          "lToken": "0x97Fc37A641fdD63739A8Bc5030ec68dCF7D7cc29",
+          "pool": "0x007c4C15afB2CA1e2B9fd97bD157FFC7Ee5C6D7d"
+      }
+  ],
+
+  "abifiles": {
+      "pool": "pool.abi",
+      "bToken": "bToken.abi",
+      "pToken": "pToken.abi",
+      "lToken": "lToken.abi"
+  },
+
+  "methods": {
+      "symbol": "symbol",
+      "decimals": "decimals",
+      "totalSupply": "totalSupply",
+      "balanceOf": "balanceOf",
+      "allowance": "allowance",
+      "approve": "approve",
+      "mint": "mint",
+      "getParameters": "getParameters",
+      "getPosition": "getPosition(address)",
+      "getStateValues": "getStateValues",
+      "depositMargin": "depositMargin(uint256,uint256,uint256,uint8,bytes32,bytes32)",
+      "withdrawMargin": "withdrawMargin(uint256,uint256,uint256,uint8,bytes32,bytes32)",
+      "addLiquidity": "addLiquidity(uint256,uint256,uint256,uint8,bytes32,bytes32)",
+      "removeLiquidity": "removeLiquidity(uint256,uint256,uint256,uint8,bytes32,bytes32)",
+      "tradeWithMargin": "tradeWithMargin(int256,uint256,uint256,uint256,uint8,bytes32,bytes32)"
+  }
+}
