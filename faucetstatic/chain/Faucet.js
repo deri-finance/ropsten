@@ -41,16 +41,22 @@ $(function () {
         
     }
     function addD(){
+        let btn = $('#obtainD')
+        disableButton(btn)
+        let id = 1;
         let address = $('.form-control').val()
         if(address){
-            contract.initialize(1).then(() => {
-                try {
-                    let res = contract.mint(address,10000)
-                    alert('You get 10,000 DAI')
-                    $('.form-control').val('')
-                } catch (error) {
-                    console.log(error)
-                }
+            contract.initialize(id).then(() => {
+                console.log('aa')
+                contract.mint(address,10000).then(res=>{
+                    console.log(res)
+                    enableButton(btn)
+                }).catch(err=>{
+                    enableButton(btn)
+                    console.log(err)
+                })
+                    // alert('You get 10,000 USDT')
+                    // $('.form-control').val('')
             });
         }
         
