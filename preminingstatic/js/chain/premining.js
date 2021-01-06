@@ -5,6 +5,32 @@ $(function () {
     contract._initConfig().then((res)=>{
         connectwallet();
     })
+    function getblock(pooladdress){
+        setInterval(function(){
+            $.ajax({
+                url:'https://mining.deri.finance/block',
+                type:"GET",
+                data:{
+                    pooladdress:pooladdress,
+                },
+                success:(res)=>{
+                    var sblock = res.startBlock;
+                    $.ajax({
+                        // url:'https://api.etherscan.io/api?module=proxy&action=eth_blockNumber',//正式
+                        url:'https://api-ropsten.etherscan.io/api?module=proxy&action=eth_blockNumber&apikey=YourApiKeyToken',//ropsten
+                        type:'GET',
+                        success:(res)=>{
+                            if(res.jsonrpc){
+                                let mblock = +res.result;
+                                let block = mblock-sblock;
+                                $('.block').text(block)
+                            }
+                        }
+                    })
+                }
+            })
+        },5000)
+    }
     function  current(account,pooladdress){
         let dtime = new Date();
         let rday = dtime.getUTCDate();
@@ -32,29 +58,7 @@ $(function () {
             let timehtml = `${cday} d ${chour} h ${cmin} m ${csecond} s`;
             $('.time').text(timehtml);
             $.ajax({
-                url:'http://3.112.196.38:8000/block',
-                type:"GET",
-                data:{
-                    pooladdress:pooladdress,
-                },
-                success:(res)=>{
-                    var sblock = res.startBlock;
-                    $.ajax({
-                        // url:'https://api.etherscan.io/api?module=proxy&action=eth_blockNumber',//正式
-                        url:'https://api-ropsten.etherscan.io/api?module=proxy&action=eth_blockNumber&apikey=YourApiKeyToken',//ropsten
-                        type:'GET',
-                        success:(res)=>{
-                            if(res.jsonrpc){
-                                let mblock = +res.result;
-                                let block = mblock-sblock;
-                                $('.block').text(block)
-                            }
-                        }
-                    })
-                }
-            })
-            $.ajax({
-                url:'http://3.112.196.38:8000/mintamount',
+                url:'https://mining.deri.finance/mintamount',
                 type:"GET",
                 data:{
                     pooladdress:pooladdress,
@@ -83,7 +87,8 @@ $(function () {
                 getLiquidity();
                 getNetLiquidity();
                 perLiquidityShare();
-                current(res[0],contract._pool_address)
+                current(res[0],contract._pool_address);
+                getblock(contract._pool_address)
                 // poolSymbol();
             }else{
              alert('connection fail')
