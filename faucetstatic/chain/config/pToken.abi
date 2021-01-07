@@ -27,7 +27,7 @@
         {
           "indexed": true,
           "internalType": "address",
-          "name": "approved",
+          "name": "operator",
           "type": "address"
         },
         {
@@ -94,7 +94,7 @@
       "inputs": [
         {
           "internalType": "address",
-          "name": "to",
+          "name": "operator",
           "type": "address"
         },
         {
@@ -208,33 +208,28 @@
       "name": "getPosition",
       "outputs": [
         {
-          "internalType": "address",
-          "name": "",
-          "type": "address"
-        },
-        {
           "internalType": "int256",
-          "name": "",
+          "name": "volume",
           "type": "int256"
         },
         {
           "internalType": "int256",
-          "name": "",
+          "name": "cost",
           "type": "int256"
         },
         {
           "internalType": "int256",
-          "name": "",
+          "name": "lastCumuFundingRate",
           "type": "int256"
         },
         {
           "internalType": "uint256",
-          "name": "",
+          "name": "margin",
           "type": "uint256"
         },
         {
           "internalType": "uint256",
-          "name": "",
+          "name": "lastUpdateTimestamp",
           "type": "uint256"
         }
       ],
@@ -252,33 +247,28 @@
       "name": "getPosition",
       "outputs": [
         {
-          "internalType": "address",
-          "name": "",
-          "type": "address"
-        },
-        {
           "internalType": "int256",
-          "name": "",
+          "name": "volume",
           "type": "int256"
         },
         {
           "internalType": "int256",
-          "name": "",
+          "name": "cost",
           "type": "int256"
         },
         {
           "internalType": "int256",
-          "name": "",
+          "name": "lastCumuFundingRate",
           "type": "int256"
         },
         {
           "internalType": "uint256",
-          "name": "",
+          "name": "margin",
           "type": "uint256"
         },
         {
           "internalType": "uint256",
-          "name": "",
+          "name": "lastUpdateTimestamp",
           "type": "uint256"
         }
       ],

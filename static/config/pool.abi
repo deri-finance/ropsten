@@ -16,7 +16,7 @@
         {
           "indexed": false,
           "internalType": "uint256",
-          "name": "mintAmount",
+          "name": "lShares",
           "type": "uint256"
         },
         {
@@ -165,13 +165,13 @@
         {
           "indexed": false,
           "internalType": "uint256",
-          "name": "lAmount",
+          "name": "lShares",
           "type": "uint256"
         },
         {
           "indexed": false,
           "internalType": "uint256",
-          "name": "removeAmount",
+          "name": "bAmount",
           "type": "uint256"
         }
       ],
@@ -608,7 +608,7 @@
       "inputs": [
         {
           "internalType": "uint256",
-          "name": "lAmount",
+          "name": "lShares",
           "type": "uint256"
         },
         {
@@ -646,7 +646,7 @@
       "inputs": [
         {
           "internalType": "uint256",
-          "name": "lAmount",
+          "name": "lShares",
           "type": "uint256"
         }
       ],

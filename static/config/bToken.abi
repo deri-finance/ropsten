@@ -194,6 +194,24 @@
       "type": "function"
     },
     {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "account",
+          "type": "address"
+        },
+        {
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "mint",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
       "constant": true,
       "inputs": [
         {
@@ -498,20 +516,12 @@
     {
       "inputs": [
         {
-          "name": "_initialSupply",
-          "type": "uint256"
-        },
-        {
           "name": "_name",
           "type": "string"
         },
         {
           "name": "_symbol",
           "type": "string"
-        },
-        {
-          "name": "_decimals",
-          "type": "uint256"
         }
       ],
       "payable": false,

@@ -1,12 +1,12 @@
 {
     "oracleUrl": "https://oracle.deri.finance/price",
 
-    "addresses": [
+    "addresses":[
         {
-            "pool": "0xE5a4fCd3CE3a824bF15D5FABd390cF44E83AbE8B",
+            "pool": "0x2d049955A4493285e7aDA34247607f9bC6B120E0",
             "bToken": "0x8F038C454B6E68B2988706a1a5f78dE2C4634097",
-            "pToken": "0x02c9840fD044abFd58E9674ecc232e8b1F323fE8",
-            "lToken": "0xa2eFf409E6bA54176e01b35aA7deca643A31F849"
+            "pToken": "0xFd03432E3214Cdc982C330024F2d6E15AFF0FA19",
+            "lToken": "0xf9969B18FDdf99d1aBB775014C5e49b50B85bB23"
         },
         {
             "pool": "0x007c4C15afB2CA1e2B9fd97bD157FFC7Ee5C6D7d",
@@ -15,7 +15,6 @@
             "lToken": "0x97Fc37A641fdD63739A8Bc5030ec68dCF7D7cc29"
         }
     ],
-
     "abifiles": {
         "pool": "pool.abi",
         "bToken": "bToken.abi",

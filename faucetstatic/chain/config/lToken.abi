@@ -33,7 +33,7 @@
         {
           "indexed": false,
           "internalType": "uint256",
-          "name": "value",
+          "name": "amount",
           "type": "uint256"
         }
       ],
@@ -58,7 +58,7 @@
         {
           "indexed": false,
           "internalType": "uint256",
-          "name": "value",
+          "name": "amount",
           "type": "uint256"
         }
       ],
@@ -250,7 +250,7 @@
       "inputs": [
         {
           "internalType": "address",
-          "name": "recipient",
+          "name": "to",
           "type": "address"
         },
         {
@@ -274,12 +274,12 @@
       "inputs": [
         {
           "internalType": "address",
-          "name": "sender",
+          "name": "from",
           "type": "address"
         },
         {
           "internalType": "address",
-          "name": "recipient",
+          "name": "to",
           "type": "address"
         },
         {
