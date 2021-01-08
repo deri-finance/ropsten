@@ -80,7 +80,7 @@ $(function () {
                 $('#connect-wallet').hide();
                 account = account.slice(0, 6) + '***' + account.slice(account.length - 4, account.length);
                 if(ethereum.networkVersion!='3'){
-                    account = `( Wrong Network! )${account}`
+                    $('#wrong').text('(Wrong Network!)')
                 }
                 $(".id").text(account);
                 isUnlock();
