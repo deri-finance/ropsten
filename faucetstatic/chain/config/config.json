@@ -29,6 +29,7 @@
         "balanceOf": "balanceOf",
         "allowance": "allowance",
         "approve": "approve",
+        "mint":"mint",
         "getParameters": "getParameters",
         "getPosition": "getPosition(address)",
         "getStateValues": "getStateValues",

@@ -204,7 +204,6 @@ class Chain {
     }
 
     async _initializeParameters() {
-        console.log('cc')
         try {
             this.symbol = await this._call(this.pool, 'symbol');
             this.bSymbol = await this._call(this.bToken, 'symbol');

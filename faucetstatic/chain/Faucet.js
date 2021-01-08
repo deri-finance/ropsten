@@ -24,19 +24,27 @@ $(function () {
         let id = 0;
         let address = $('.form-control').val()
         if(address){
-            contract.initialize(id).then(() => {
-                console.log('aa')
-                contract.mint(address,10000).then(res=>{
-                    console.log(res)
-                    enableButton(btn)
-                    alert('You  get 10000 USDT')
-                }).catch(err=>{
-                    enableButton(btn)
-                    console.log(err)
-                })
-                    // alert('You get 10,000 USDT')
-                    // $('.form-control').val('')
-            });
+            contract.connectWallet().then(res=>{
+                if(res.success){
+                    contract.initialize(id).then(() => {
+                        console.log('aa')
+                        contract.mint(address,10000).then(res=>{
+                            console.log(res)
+                            if(!res.success){
+                                alert('err')
+                                enableButton(btn)
+                                return;
+                            }
+                            enableButton(btn)
+                            alert('You  get 10000 USDT')
+                        }).catch(err=>{
+                            enableButton(btn)
+                            console.log(err)
+                        })
+                    });
+                }
+            })
+            
         }
         
         
@@ -47,20 +55,26 @@ $(function () {
         let id = 1;
         let address = $('.form-control').val()
         if(address){
-            contract.initialize(id).then(() => {
-                console.log('aa')
-                contract.mint(address,10000).then(res=>{
-                    enableButton(btn)
-                    $('.form-control').val('')
-                    alert('You  get 10000 DAI')
-                }).catch(err=>{
-                    enableButton(btn)
-                    $('.form-control').val('')
-                    console.log(err)
-                })
-                    // alert('You get 10,000 USDT')
-                    // $('.form-control').val('')
-            });
+            contract.connectWallet().then(res=>{
+                if(res.success){
+                    contract.initialize(id).then(() => {
+                        console.log('aa')
+                        contract.mint(address,10000).then(res=>{
+                            console.log(res)
+                            if(!res.success){
+                                alert('err')
+                                enableButton(btn)
+                                return;
+                            }
+                            enableButton(btn)
+                            alert('You  get 10000 DAI')
+                        }).catch(err=>{
+                            enableButton(btn)
+                            console.log(err)
+                        })
+                    });
+                }
+            })
         }
         
     }
