@@ -78,7 +78,11 @@ $(function () {
             if(res){
                 let account = res[0];
                 $('#connect-wallet').hide();
-                $(".id").text(account.slice(0, 6) + '***' + account.slice(account.length - 4, account.length));
+                account = account.slice(0, 6) + '***' + account.slice(account.length - 4, account.length);
+                if(ethereum.networkVersion!='3'){
+                    account = `( Wrong Network! )${account}`
+                }
+                $(".id").text(account);
                 isUnlock();
                 getWalletBalance();
                 getsymbol();
@@ -189,6 +193,7 @@ $(function () {
     }
     $('#removeall').on('click',function(){
         let button = $('#removeLiquidityButton');
+        disableButton(button);
         contract._getMaxRemoveLiquidity().then(res=>{
             let maxRemoveLiquidity = res.maxRemoveLiquidity;
             contract.removeLiquidity(maxRemoveLiquidity).then(res=>{

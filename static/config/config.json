@@ -1,5 +1,5 @@
 {
-    "oracleUrl": "https://oracle.deri.finance/price",
+    "oracleUrl": "https://oracle.deri.finance/price/",
 
     "addresses":[
         {

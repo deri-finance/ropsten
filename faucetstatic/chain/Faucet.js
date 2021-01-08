@@ -5,9 +5,14 @@ $(function () {
         contract.connectWallet().then(res => {
             console.log(res);
             if(res.success){
+                    load()
                     let account = contract.account;
                     $('#connect-wallet').hide();
-                    $(".id").text(account.slice(0, 6) + '***' + account.slice(account.length - 4, account.length));
+                        account = account.slice(0, 6) + '***' + account.slice(account.length - 4, account.length);
+                    if(ethereum.networkVersion!='3'){
+                        account = `( Wrong Network! )${account}`
+                    }
+                    $(".id").text(account);
             }else{
                 alert(res.error)
             }
@@ -15,6 +20,9 @@ $(function () {
             console.log(err)
         })
 
+    }
+    async function load(){
+        await contract._bindEvent()
     }
     $('#obtainU').on('click',addU);
     $('#obtainD').on('click',addD);
@@ -27,7 +35,6 @@ $(function () {
             contract.connectWallet().then(res=>{
                 if(res.success){
                     contract.initialize(id).then(() => {
-                        console.log('aa')
                         contract.mint(address,10000).then(res=>{
                             console.log(res)
                             if(!res.success){
