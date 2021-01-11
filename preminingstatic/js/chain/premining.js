@@ -170,11 +170,16 @@ $(function () {
     function addLiquidity(){
         let minAddLiquidity = contract.getMinAddLiquidity();
         let button = $('#addLiquidityButton');
+        let maxliquidity = $('#my-balance').text()
         let marginInput = $('#liquidity-margin').val();
         let isWalletConnected = contract.isWalletConnected()
         if(!isWalletConnected){
             alert('Please Connect MetaMask wallet first!');
             return;
+        }
+        if(+marginInput>maxliquidity){
+        alert('not sufficient funds')
+        return;
         }
         if(+marginInput < +minAddLiquidity){
             alert(`The input liquidity shall not be less than ${minAddLiquidity}`)
