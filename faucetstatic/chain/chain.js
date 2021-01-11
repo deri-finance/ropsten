@@ -113,7 +113,7 @@ class Chain {
         return bigNumber.toFormat().replaceAll(",", "").toString();
     }
     async mint(account, amount) {
-        console.log(this.bDecimals)
+        console.log(account)
         let BONE = 10 ** this.bDecimals
         amount = this.format(new BigNumber(amount).multipliedBy(BONE));
         console.log("amount", amount);

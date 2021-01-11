@@ -1,11 +1,13 @@
 $(function () {
     const contract = new Chain();
+    var address;
     connectwallet();
     function connectwallet() {
         contract.connectWallet().then(res => {
             console.log(res);
             if(res.success){
                     load()
+                    address = contract.account
                     let account = contract.account;
                     account =
                     account.slice(0, 6) +
@@ -16,6 +18,7 @@ $(function () {
                         $('#wrong').text('(Wrong Network!)')
                     }
                     $(".id").text(account);
+                    $("#address").text(address)
             }else{
                 alert(res.error)
             }
@@ -33,7 +36,6 @@ $(function () {
         let btn = $('#obtainU')
         disableButton(btn)
         let id = 0;
-        let address = $('.form-control').val()
         if(address){
             contract.connectWallet().then(res=>{
                 if(res.success){
@@ -41,7 +43,6 @@ $(function () {
                         contract.mint(address,10000).then(res=>{
                             console.log(res)
                             if(!res.success){
-                                alert('err')
                                 enableButton(btn)
                                 return;
                             }
@@ -63,16 +64,13 @@ $(function () {
         let btn = $('#obtainD')
         disableButton(btn)
         let id = 1;
-        let address = $('.form-control').val()
         if(address){
             contract.connectWallet().then(res=>{
                 if(res.success){
                     contract.initialize(id).then(() => {
-                        console.log('aa')
                         contract.mint(address,10000).then(res=>{
                             console.log(res)
                             if(!res.success){
-                                alert('err')
                                 enableButton(btn)
                                 return;
                             }

@@ -14,6 +14,20 @@
     <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css'>
 
     <link rel="stylesheet" href="./preminingstatic/css/sidebar.css">
+    <style>
+        #obtainU,#obtainD{
+            background-image: linear-gradient(
+                90deg,
+                #09d3af 0%,
+                #09b8c2 18%,
+                #0965ff 100%
+            );
+            border-radius: 24px;
+            width: 13.75rem;
+            height: 3rem;
+            border: 0;
+        }
+    </style>
 </head>
 
 <body class=" bg-main">
@@ -36,31 +50,32 @@
     <div class="container-fluid">
         <div class="row  justify-content-center">
             <div role="tabpanel" class="mt-2">
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" placeholder="Address" id="address" style="width:25rem">
-                    <div class="input-group-append">
-                        <span class="input-group-text" >Address</span>
-                    </div>
+                <div class="input-group mb-3" style="color: white;">
+                    Wallet Address:&nbsp;&nbsp;<span id='address'></span>
                 </div>
                 <div class="w-100 text-center mt-2 mb-2">
-                    <button type="button" id='obtainU' class="btn btn-primary">
+                    <button type="button" id='obtainU'>
                         <span
                           class="spinner spinner-border spinner-border-sm"
                           role="status"
                           aria-hidden="true"
                           style="display: none"
                         ></span>
-                        Obtain(USDT)</button>
-                    <button type="button" id='obtainD' class="btn btn-primary">
+                        Obtain USDT </button>
+                        <br>
+                        <br>
+                    <button type="button" id='obtainD'>
                         <span
                           class="spinner spinner-border spinner-border-sm"
                           role="status"
                           aria-hidden="true"
                           style="display: none"
                         ></span>
-                        Obtain(DAI)</button>
+                        Obtain DAI</button>
                 </div>
-                <div style="text-align: center;margin-top: 100px;">
+                <div style="text-align: center;margin-top: 100px;color: white;">
+                    Go to the link below if you need Ropsten ETH:
+                    <br>
                     <a href="https://faucet.ropsten.be/">ETH Faucet</a>
                 </div>
             </div>

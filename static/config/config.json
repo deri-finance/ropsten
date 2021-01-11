@@ -9,10 +9,10 @@
             "lToken": "0xf9969B18FDdf99d1aBB775014C5e49b50B85bB23"
         },
         {
-            "pool": "0x007c4C15afB2CA1e2B9fd97bD157FFC7Ee5C6D7d",
+            "pool": "0x3eBB14bbD6D2964292C2Fb98cF611a08495A6C91",
             "bToken": "0x7382B8013bAF81850d5D4d2B109bc184d9D12383",
-            "pToken": "0x07b5A3BC0c4EeC1C9e3f4Db8938a16728ed38462",
-            "lToken": "0x97Fc37A641fdD63739A8Bc5030ec68dCF7D7cc29"
+            "pToken": "0xdf2CDEfbA787CfB700B69DD83ce437C72fe8130F",
+            "lToken": "0x756F77997E066d121032a0F3e07D96003B3554aD"
         }
     ],
     "abifiles": {
