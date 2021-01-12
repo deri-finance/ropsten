@@ -3,16 +3,16 @@
 
     "addresses":[
         {
-            "pool": "0x8747F272f2b2E10024eE61a8614D8534827B1644",
+            "pool": "0x2Acf47D3Bdb68D791ECbD565E1975545cEd2dF0c",
             "bToken": "0x8F038C454B6E68B2988706a1a5f78dE2C4634097",
-            "pToken": "0x2f4cBc98356488b2323f382d7CC36bFFA2F6b222",
-            "lToken": "0xe36A12730E3Eb57804568f2E29e42Ca8beDa6426"
+            "pToken": "0x5052fa10d68F4146B66bc15fd8cCb1674B482026",
+            "lToken": "0x3f9e0a169073534348332862bFacE7fe40fbefD1"
         },
         {
-            "pool": "0x5044b82fd4F36be86af431fE29af2D0bF591a17C",
+            "pool": "0x6b076E0e25778cC26B99E662b88f8659F9b34a55",
             "bToken": "0x7382B8013bAF81850d5D4d2B109bc184d9D12383",
-            "pToken": "0x86DC8B48cEB23D7E17CC3a6325c6A4BfFe94Be19",
-            "lToken": "0xD51F015F77565376137f2aA442D54e7796609bD0"
+            "pToken": "0xdD0592aD74254323C9f6927a012a50Cc02E4522b",
+            "lToken": "0xA4A8c6cee34cE91367d7DDf346422E08696C2323"
         }
     ],
     "abifiles": {
