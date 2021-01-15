@@ -3,10 +3,10 @@
 
     "addresses":[
         {
-            "pool": "0x7c87458Fe506C4A148C516F32cba8a29651184c1",
+            "pool": "0xaf8978842EeaE07cF1894275c4763131349cae5B",
             "bToken": "0x8F038C454B6E68B2988706a1a5f78dE2C4634097",
-            "pToken": "0x528ffD2f7ba2D9a0065eE75097011dc208533c2f",
-            "lToken": "0x60c2362Ac8817ff20C13e14A559aC3629F6b96E0"
+            "pToken": "0xF24746E1fDEF056d5b990e6460DFb2Cc5BCEC2AC",
+            "lToken": "0x06e47B20958Ba5fAd98c8F30BCCE4f7D45ec4694"
         },
         {
             "pool": "0x6001ca8836050e04882879FCf93B69d2234ee8b4",
