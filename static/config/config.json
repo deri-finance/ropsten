@@ -1,6 +1,7 @@
 {
     "oracleUrl": "https://oracle.deri.finance/price/",
-
+    "kovanProviderUrl": "https://kovan.infura.io/v3/194f1b2b258e45ad9e50d5e30f2ec8bb",
+    "ropstenProviderUrl": "https://ropsten.infura.io/v3/194f1b2b258e45ad9e50d5e30f2ec8bb",  
     "addresses":[
         {
             "pool": "0xaf8978842EeaE07cF1894275c4763131349cae5B",
