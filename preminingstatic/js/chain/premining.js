@@ -105,10 +105,10 @@ $(function () {
     function perLiquidityShare(){
         contract.perLiquidityShare().then(res=>{
             if(res=='NaN'){
-                $('.value').eq(2).text('---')
+                $('.liquiditysharevalue').text('---')
             }else{
                 let share = +res
-                $('.value').eq(2).text(share.toFixed(6))
+                $('.liquiditysharevalue').text(share.toFixed(6))
             }
         })
     }

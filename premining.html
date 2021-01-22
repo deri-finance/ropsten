@@ -13,8 +13,9 @@
     <!--图标库-->
     <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css'>
 
-    <link rel="stylesheet" href="./preminingstatic/css/sidebar.css">
+    <link rel="stylesheet" href="preminingstatic/css/sidebar.css">
     <link rel="stylesheet" href="preminingstatic/css/trade.css">
+    <link rel="stylesheet" href="preminingstatic/css/preminging.css">
     <style>
         .input-group {
             width: 25rem;
@@ -27,7 +28,7 @@
 
         .left {
             float: left;
-            margin-top: 3.7%;
+            margin-top: 63px;
         }
 
         .text-mute {
@@ -39,17 +40,17 @@
             margin-left: 9.4rem;
             display: flex;
             flex-direction: column;
-            width: 35.75rem;
+            width: 460px;
+            margin-top: 43px;
+        }
+
+        .carone,.cartwo{
             background: #141924;
             border-radius: 2.5rem 0rem 2.5rem 0rem;
-            margin-top: 15.4%;
-        }
-
-        .car {
             flex: 1 1 auto;
-            padding: 2.05rem;
+            padding: 24.5px;
+            margin-top: 20px;
         }
-
         .add {
             background-image: linear-gradient(90deg, #09D3AF 0%, #09B8C2 18%, #0965FF 100%);
             border-radius: 24px;
@@ -57,7 +58,14 @@
             height: 3rem;
             border: 0;
         }
-
+        .claim{
+            background-image: linear-gradient(90deg, #09D3AF 0%, #09B8C2 18%, #0965FF 100%);
+            border-radius: 24px;
+            width: 400px;
+            height: 3rem;
+            border: 0;
+            margin-top: 64px;
+        }
         .remove {
             background-image: linear-gradient(90deg, #FF5893 0%, #FF2D2D 100%);
             border-radius: 24px;
@@ -93,6 +101,7 @@
             border-bottom-right-radius: 0 !important;
         }
     </style>
+
 </head>
 
 <body class=" bg-main" style="font-family: ArialMT;">
@@ -117,17 +126,54 @@
             </div>
             <div>
                 <button type="button" class="connect br10-rem" id="connect-wallet">Connect wallet</button>
-                <span id="wrong" style="color: red;"></span> <span class="id"></span>
+                <span id="wrong" style="color: red;"></span> <span class="id" style="color: #fff;"></span>
             </div>
             <div class="navbar-collapse ml-auto collapse show" id="navbar-mobile">
             </div>
         </div>
     </nav>
-    <div class="container-fluid" style="width: 95.8% !important;">
+    <div class="container-fluid" style="width:96.69% !important;">
         <!--标签内容-->
         <div class="row  justify-content-center"
-            style="background: #19202B;margin-top: 29px;margin-left: 0;margin-right: 0;height: 840px;">
+            style="background: #19202B;margin-top: 29px;margin-left: 0;margin-right: 0;height: 864px;">
             <div role="tabpanel" class="  mt-2 fcw" id="liquidity">
+                <div class="deri_box">
+                    <div class="deri_title">
+                        <div class="deri_to_mine" >
+                            <div class="mine_text">
+                                <img src="preminingstatic/images/mine.png" alt="">
+                                <span>DERI to mine</span>
+                            </div>
+                            <div class="mine_num">20,000,000</div>
+                            <div class="mine_hover_title">
+                                20,000,000 DERI tokens waiting for you to harvest in the premining program!
+                            </div>
+                        </div>
+                        <div class="lhr"></div>
+                        <div class="deri_apy" >
+                            <div class="apy_text">
+                                <img src="preminingstatic/images/apy.png" alt="">
+                                <span>APY</span>
+                            </div>
+                            <div class="apy_num">100%</div>
+                            <div class="apy_hover_title">APY estimated by real-time DERI price <br> from Sushiswap!</div>
+                        </div>
+                        <div class="lhr"></div>
+                        <div class="deri_risk">
+                            <div class="risk_text">
+                                <img src="preminingstatic/images/risk.png" alt="">
+                                <span>Risk</span>
+                            </div>
+                            <div class="risk_num">
+                                0
+                            </div>
+                            <div class="risk_hover_title">
+                                Premining is only staking.<br> There is ZERO risk for it!
+                            </div>
+                        </div>
+                    </div>
+                    <div class="hr"></div>
+                </div>
                 <!--增加/提取流动性-->
                 <div class="left">
                     <div class="text-mute">Wallet Balance: <span class="text-mute" id="my-balance">--</span>
@@ -140,12 +186,12 @@
                             <span class="input-group-text symbol">--</span>
                         </div>
                         <div class="w-100 mt-4 mb-2">
-                            <button type="button" style="display: none;" class="add" id="addLiquidityButton">
+                            <button type="button" style="display: none;color: #fff;" class="add" id="addLiquidityButton">
                                 <span class="spinner spinner-border spinner-border-sm" role="status" aria-hidden="true"
                                     style="display: none;"></span>
                                 ADD LIQUIDITY
                             </button>
-                            <button type="button" class="add" id="Unlock">
+                            <button type="button" class="add" id="Unlock" style="color: #fff">
                                 <span class="spinner spinner-border spinner-border-sm" role="status" aria-hidden="true"
                                     style="display: none;"></span>
                                 UNlOCK
@@ -162,30 +208,34 @@
                             <span class="input-group-text" id="">LiquidityShares</span>
                         </div>
                         <div class="w-100  mt-4 mb-2">
-                            <button type="button" class="remove" id="removeLiquidityButton">
+                            <button type="button" class="remove" id="removeLiquidityButton" style="color: #fff">
                                 <span class="spinner spinner-border spinner-border-sm" role="status" aria-hidden="true"
                                     style="display: none;"></span>
                                 REMOVE LIQUIDITY
                             </button>
                         </div>
                     </div>
+                    <div class="w-100">
+                        <button type="button" style="color: #fff;" class="claim" id="claimmyderi">
+                            <span class="spinner spinner-border spinner-border-sm" role="status" aria-hidden="true"
+                                style="display: none;"></span>
+                                Claim My DERI
+                        </button>
+                    </div>
                 </div>
                 <div class="right">
-                    <div class="car">
+                    <div class="carone">
                         <p class="card-text">
                             <span class="key text-muted">Pool Total Liquidity</span>
                             <span class="symbol float-right "></span>
-                            <span class="value float-right text-mute" id="total-liquidity"
+                            <span class="pooltotalliquidity float-right text-mute" id="total-liquidity"
                                 style="margin-right:3px">---</span>
                         </p>
-                        <p class="card-text">
-                            <span class="key text-muted">My Liquidity Shares</span>
-                            <span class="value float-right text-mute my-liquidity">---</span>
-                        </p>
+                        
                         <p class="card-text">
                             <span class="key text-muted">Liquidity Share Value</span>
                             <span class="symbol float-right "></span>
-                            <span class="value float-right text-mute" style="margin-right:3px"> --- </span>
+                            <span class="liquiditysharevalue float-right text-mute" style="margin-right:3px"> --- </span>
                         </p>
                         <p class="card-text">
                             <span class="key text-muted">Current Epoch Remaining Time</span>
@@ -196,13 +246,30 @@
                             <span class="block float-right text-mute ">---</span>
                         </p>
                         <p class="card-text">
-                            <span class="key text-muted">My Harvest in Current Epoch</span>
+                            <span class="key text-muted">DERI for Current Epoch</span>
+                            <span class="float-right text-mute" style="margin-right:3px">1,000,000</span>
+                        </p>
+                    </div>
+                    <div class="cartwo">
+                        <p class="card-text">
+                            <span class="key text-muted">My Liquidity Shares (Percentage)</span>
+                            <span class="value float-right text-mute my-liquidity">---</span>
+                        </p>
+                        <p class="card-text">
+                            <span class="key text-muted">My Harvest in Current Epoch (estimated)</span>
                             <span class="float-right">DERI</span>
                             <span class="deri float-right text-mute" style="margin-right:3px">---</span>
                         </p>
+                        <p class="card-text">
+                            <span class="key text-muted">Claimed DERI</span>
+                            <span class="value float-right text-mute" style="margin-right:3px"> --- </span>
+                        </p>
+                        <p class="card-text">
+                            <span class="key text-muted">Unclaimed DERI</span>
+                            <span class="float-right text-mute ">---</span>
+                        </p>
+                       
                     </div>
-
-
                 </div>
 
             </div>

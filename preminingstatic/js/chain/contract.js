@@ -35,7 +35,6 @@ class Contract {
         return this._wallet.connectWallet().then((ret) => {
             this.account = ret[0];
             this._web3 = this._wallet.getWeb3();
-            console.log(ret);
             this.poolContract = this._getContract(this._pool_address, this._pool_abi);
             this.btokenContract = this._getContract(this._btoken_address, this._btoken_abi);
             this.positionTokenContract = this._getContract(this._positiontoken_address, this._positiontoken_abi);
@@ -54,7 +53,6 @@ class Contract {
     };
 
     isWalletConnected() {
-        console.log(this.poolContract);
         if (!this.account || !this._web3 || !this.poolContract) {
             return false;
         } else {
@@ -117,7 +115,6 @@ class Contract {
 
     /*调用链上方法*/
     call(contract, func, params) {
-        console.log(contract, func, params);
         if (params) {
             return contract.methods[func](...params).call().then((ret) => {
                 return ret;
@@ -134,7 +131,6 @@ class Contract {
     };
 
     transact(contract, func, value) {
-        console.log("contract, func, value", contract, func, value)
         // return contract.methods[func](...value).estimateGas({'from': this.account})
         //     .then((ret) => {
         //         console.log(...value);
@@ -148,7 +144,6 @@ class Contract {
     /*获取钱包余额*///已测
     _getWalletBalanceOf() {
         return this.call(this.btokenContract, "balanceOf", [this.account]).then((ret) => {
-            console.log(ret);
             return ret
         }).catch((err) => {
             console.log(err);
@@ -158,7 +153,6 @@ class Contract {
     /*获取钱包余额（币的余额），网页端显示*///已测
     getWalletBalanceOf() {
         return this._getWalletBalanceOf().then((ret) => {
-            console.log({ "balance": this.format(this.dividedByBONE(new BigNumber(ret))) });
             return { "balance": this.format(this.dividedByBONE(new BigNumber(ret))) };
         }).catch((err) => {
 
@@ -168,7 +162,6 @@ class Contract {
     /**///已测
     mint(account, amount) {
         amount = this.format(new BigNumber(amount).multipliedBy(this._BONE));
-        console.log("amount", amount);
         return this.transact(this.btokenContract, "mint", [account, amount]).then((ret) => {
             return ret;
         }).catch((err) => {
@@ -179,7 +172,6 @@ class Contract {
     /*获取symbol*///已测
     getSymbol() {
         return this.call(this.btokenContract, "symbol").then((ret) => {
-            console.log(ret);
             return ret;
         }).catch((err) => {
             console.log(err);
@@ -188,7 +180,6 @@ class Contract {
 
     /*授权给pool能使用的额度，或者说是unlock*/
     approveMax(spender) {
-        console.log(spender);
         if (spender == undefined) spender = this.poolContract._address;
         return this.transact(this.btokenContract, "approve",
             [spender, '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff']).then((ret) => {
@@ -222,11 +213,9 @@ class Contract {
     _getBTokenUNIT() {
         //获取币的decimals
         return this.call(this.btokenContract, "decimals").then((ret) => {
-            console.log(ret);
             this._BONE = 10 ** ret;
             return ret;
         }).catch((err) => {
-            console.log(err);
         })
     };
 
@@ -247,7 +236,6 @@ class Contract {
             this.maxLiquidationReward = this.dividedByUNIT(ret.maxLiquidationReward);
             this.liquidationCutRatio = this.dividedByUNIT(ret.liquidationCutRatio);
             this.priceDelayAllowance = ret.priceDelayAllowance;
-            console.log("_getParameters")
             return ret;
         }).catch((err) => {
             console.log(err);
@@ -312,12 +300,10 @@ class Contract {
             //liquidity += funding + fee + realizedCost
             liquidity = liquidity.plus(funding).plus(fee).plus(realizedCost);//liquidity += funding + fee + realizedCost
             let value = tradersNetVolume.multipliedBy(new BigNumber(-1)).multipliedBy(price).multipliedBy(this.multiplier);//-tradersNetVolume * price * multiplier
-            console.log("value,tradersNetVolume,tradeVolume", this.format(value), this.format(tradersNetVolume), this.format(tradeVolume));
             // value = -tradersNetVolume * price * multiplier
             // ratio = (liquidity + value + tradersNetCost) / abs(value)
             // ratio >= minPoolMarginRatio
             let ratio = (liquidity.plus(value).plus(tradersNetCost)).dividedBy(value.abs());
-            console.log("ratio", this.format(ratio));
             if (ratio.lte(this.minPoolMarginRatio)) return false;
             return true
         }).catch(err => {
@@ -329,13 +315,10 @@ class Contract {
     _addLiquidity(margin) {
         let funcName = "addLiquidity(uint256)";
         margin = this.format(new BigNumber(margin).multipliedBy(this._ONE));
-        console.log("margin", margin);
         let params = [
             margin
         ]
-        console.log(params);
         return this.transact(this.poolContract, funcName, params).then((ret) => {
-            console.log("添加流动性成功");
             return ret;
         }).catch((err) => {
             console.log(err);
@@ -346,7 +329,6 @@ class Contract {
     addLiquidity(margin) {
         //获取钱包余额,以及allowance
         return Promise.all([this._getWalletBalanceOf(), this._getAllowance()]).then((ret) => {
-            console.log(ret[0],ret[1])
             let balance = new BigNumber(ret[0]);
             let allowance = new BigNumber(ret[1]);
             let _margin = new BigNumber(margin);
@@ -359,7 +341,6 @@ class Contract {
                     })
                 } else {
                     // 添加流动性
-                    console.log("添加流动性");
                     return this._addLiquidity(margin);
                 }
             } else {
@@ -372,7 +353,6 @@ class Contract {
 
     _getTotalSupply() {
         return this.call(this.liquidityTokenContract, "totalSupply").then(ret => {
-            console.log(ret)
             return ret;
         }).catch(err => {
 
@@ -381,7 +361,6 @@ class Contract {
 
     _getMaxRemoveLiquidity(amount) {
         return Promise.all([this._getLiquidity()]).then(ret => {
-            console.log(ret);
             return {
                 "maxRemoveLiquidity": this.format(this.dividedByUNIT(new BigNumber(ret[0])))
             }
@@ -393,7 +372,6 @@ class Contract {
     _removeLiquidity(volume) {
         let funcName = "removeLiquidity(uint256)";
         volume = this.format(new BigNumber(volume).multipliedBy(this._ONE));
-        console.log("volume", volume);
             let params = [
                 volume
             ]
@@ -407,7 +385,6 @@ class Contract {
     /*获取当前trader的流动性*/
     _getLiquidity() {
         return this.call(this.liquidityTokenContract, "balanceOf", [this.account]).then((ret) => {
-            console.log(ret);
             return ret;
         }).catch((err) => {
             console.log(err);
@@ -420,7 +397,6 @@ class Contract {
             let poolDynamicEquity = liquidity;
            
             let amount = liquidity.multipliedBy(totalSupply.dividedBy(poolDynamicEquity));
-            console.log(amount, this.format(amount));
 
             return amount;
         }).catch(err => {
@@ -440,7 +416,6 @@ class Contract {
         return Promise.all([this._getLiquidity(), this._getPoolWithdrawLiquidity()]).then(ret => {
             let liquidity = new BigNumber(ret[0]);
             let poolWithdrawLiquidity = new BigNumber(ret[1]);
-            console.log(liquidity, poolWithdrawLiquidity);
             let amount = liquidity.lte(poolWithdrawLiquidity) ? liquidity : poolWithdrawLiquidity;
             volume = new BigNumber(volume);
             if (volume.lte(amount)) {
@@ -463,7 +438,6 @@ class Contract {
     };
     _getStateValues() {
         return this.call(this.poolContract, "getStateValues").then((ret) => {
-            console.log(ret);
             return ret;
         }).catch((err) => {
 
@@ -483,7 +457,6 @@ class Contract {
             async: true,
             type: 'get',
             success: function (ret) {
-                // console.log(ret);
                 return ret;
             },
             error: function (err) {
@@ -496,7 +469,6 @@ class Contract {
     /*网页展示的价格*///已测
     getPrice() {
         return Promise.all([this._getPrice()]).then((ret) => {
-            console.log(this.format(this.dividedByUNIT(new BigNumber(ret[0].price))));
             return { "price": this.format(this.dividedByUNIT(new BigNumber(ret[0].price))) };
         }).catch((err) => {
             console.log(err);
@@ -505,15 +477,10 @@ class Contract {
 
     calMargin(volume, leverage = 1) {
         return Promise.all([this._getPrice()]).then(ret => {
-            console.log(ret)
             let price = this.dividedByUNIT(new BigNumber(ret[0]["price"]));
-            console.log(price, leverage, +volume)
             leverage = new BigNumber(leverage);
             volume = new BigNumber(volume).abs();
-            console.log(leverage, volume, this.multiplier)
-            console.log(volume.multipliedBy(price).multipliedBy(this.multiplier).dividedBy(leverage));
             let fee = volume.multipliedBy(price).multipliedBy(this.multiplier).multipliedBy(this.feeRatio);
-            console.log(fee, this.format(fee));
             return {
                 "margin": this.format(volume.multipliedBy(price).multipliedBy(this.multiplier).dividedBy(leverage)),
                 "fee": this.format(fee)
@@ -527,9 +494,7 @@ class Contract {
         return Promise.all([this._getPrice()]).then(ret => {
             let price = this.dividedByUNIT(new BigNumber(ret[0]["price"]));
             volume = new BigNumber(volume).abs();
-            console.log(volume, this.multiplier)
             let fee = volume.multipliedBy(price).multipliedBy(this.multiplier).multipliedBy(this.feeRatio);
-            console.log(fee, this.format(fee));
             return {
                 "fee": this.format(fee)
             }
@@ -542,15 +507,12 @@ class Contract {
         return Promise.all([this._getStateValues(),  this._getTotalSupply()]).then(ret => {
             // let price = this.dividedByUNIT(new BigNumber(ret[1]["price"]));
             let liquidity = this.dividedByUNIT(ret[0]);
-            console.log(this.format(liquidity))
             // let tradersNetCost = this.dividedByUNIT(args["tradersNetCost"]);
             // let tradersNetVolume = this.dividedByUNIT(args["tradersNetVolume"]);
             let totalSupply = this.dividedByUNIT(ret[1]);
-            console.log(this.format(totalSupply))
             // let poolDynamicEquity = liquidity.plus(tradersNetCost).minus(tradersNetVolume.multipliedBy(price).multipliedBy(this.multiplier));
             let poolDynamicEquity = liquidity;
             let per_liquidity_share = poolDynamicEquity.dividedBy(totalSupply);
-            console.log(per_liquidity_share)
             
             return this.format(per_liquidity_share);
         }).catch(err => {
@@ -577,7 +539,6 @@ class Contract {
                 toBlock: 'latest'
             },
         ).then(function (events) {
-            console.log(events);
             return events;
         }).catch(err => {
             return [];
@@ -597,7 +558,6 @@ class Contract {
                 filter: filter, // Using an array means OR: e.g. 20 or 23
                 fromBlock: 0
             }).on('data', function (event) {
-                console.log("data", event); // same results as the optional callback above
                 return event;
             }).on('changed', function (event) {
                 // remove event from local database

@@ -1,0 +1,65 @@
+#liquidity{
+    font-family: 'ArialMT' !important;
+    .deri_box{
+        width: 1041px;
+        height: 95px;
+        margin-top: 30px;
+        .deri_title{
+            img{
+                margin-top: -3px;
+            }
+            .lhr{
+                width: 1px;
+                height: 36px;
+                background: #FFFFFF;
+                border-radius: 1px;
+                display: inline-block;
+            }
+            .deri_to_mine,.deri_apy,.deri_risk{
+                width: 340px;
+                height: 95px;
+                cursor: pointer;
+                text-align: center;
+                position: relative;
+                display: inline-block;
+                color: #999999;
+                .risk_hover_title,.apy_hover_title,.mine_hover_title{
+                    position: absolute;
+                    display: none;
+                    width: 340px;
+                    top:100px;
+                    background-color: #141924;
+                    border-radius: 3px;
+                }
+                .mine_num,.apy_num,.risk_num{
+                    height: 44px;
+                    font-size: 40px;
+                    margin-top: 10px;
+                    font-family: Arial-BoldMT, Arial;
+                    font-weight: normal;
+                    color: #FFFFFF;
+                    text-align: center;
+                    line-height: 45px;
+                    background: linear-gradient(180deg, #EEEEEE 0%, #D8D8D8 100%);
+                    -webkit-background-clip: text;
+                    -webkit-text-fill-color: transparent;
+                }
+            }
+            .deri_to_mine:hover .mine_hover_title {
+                display: block;
+            }
+            .deri_apy:hover .apy_hover_title {
+                display: block;
+            }
+            .deri_risk:hover .risk_hover_title {
+                display: block;
+            }
+            
+        }
+        .hr{
+            width: 1041px;
+            height: 1px;
+            background-color: #252B35;
+        }
+    }
+}
