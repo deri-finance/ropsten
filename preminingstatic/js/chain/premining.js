@@ -1,34 +1,64 @@
+
 $(function () {
-    const contract = new Contract();
+    const contract = new Chain();
     var maxremobeLiquidity;
     var removeall = false;
-    contract._initConfig().then((res)=>{
-        connectwallet();
-    })
-    function getblock(pooladdress){
-            $.ajax({
-                url:'https://mining.deri.finance/block',
-                type:"GET",
-                data:{
-                    pooladdress:pooladdress,
-                },
-                success:(res)=>{
-                    var sblock = res.startBlock;
-                    $.ajax({
-                        // url:'https://api.etherscan.io/api?module=proxy&action=eth_blockNumber',//正式
-                        url:'https://api-ropsten.etherscan.io/api?module=proxy&action=eth_blockNumber&apikey=YourApiKeyToken',//ropsten
-                        type:'GET',
-                        success:(res)=>{
-                            if(res.jsonrpc){
-                                let mblock = +res.result;
-                                let block = mblock-sblock;
-                                $('.block').text(block)
-                            }
-                        }
-                    })
-                }
-            })
+    var minAddLiquidity,address,maxRemovableShares;
+    connectwallet();
+    $('#connect-wallet').on('click',connectwallet);
+    $('#Unlock').on('click',authorization)
+    $("#addLiquidityButton").off('click').on('click', addLiquidity);
+    $("#removeLiquidityButton").off('click').on('click', removeLiquidity);
+     function connectwallet(){
+         contract.connectWallet().then(res=>{
+            if (res.success) {
+                contract.initialize(0).then(res=>{
+                    let account = contract.account;
+                    address=account;
+                    $('#connect-wallet').hide();
+                    $(".id").text(account.slice(0, 6) + '***' + account.slice(account.length - 4, account.length));
+                    isUnlock();
+                    getWalletBalance();
+                    getSpecification();
+                    current(account,contract.addresses.pool);
+                    getblock(contract.addresses.pool)
+                    setInterval(function(){
+                        getblock(contract.addresses.pool)
+                    },1000)
+                    
+                    getLiquidityInfo();
+                })
+            }
+        }).catch(err=>{
+            console.log(err)
+         })
+        
     }
+    function getblock(pooladdress){
+        $.ajax({
+            url:'https://mining.deri.finance/block',
+            type:"GET",
+            data:{
+                pooladdress:pooladdress,
+            },
+            success:(res)=>{
+                var sblock = res.startBlock;
+                $.ajax({
+                    // url:'https://api.etherscan.io/api?module=proxy&action=eth_blockNumber',//正式
+                    url:'https://api-ropsten.etherscan.io/api?module=proxy&action=eth_blockNumber&apikey=YourApiKeyToken',//ropsten
+                    type:'GET',
+                    success:(res)=>{
+                        if(res.jsonrpc){
+                            let mblock = +res.result;
+                            let block = mblock-sblock;
+                        
+                            $('.block').text(block)
+                        }
+                    }
+                })
+            }
+        })
+}
     function  current(account,pooladdress){
         let dtime = new Date();
         let rday = dtime.getUTCDate();
@@ -63,59 +93,12 @@ $(function () {
                     account:account
                 },
                 success:(res)=>{
-                    $('.deri').text(res.mintAmount)
+                    // console.log(res)
+                    $('.deri').text(parseInt(res.mintAmount) )
                 }
             })
             
         }, 1000)
-    }
-    $('#connect-wallet').on('click',connectwallet);
-    $('#Unlock').on('click',authorization)
-    $("#addLiquidityButton").off('click').on('click', addLiquidity);
-    $("#removeLiquidityButton").off('click').on('click', removeLiquidity);
-     function connectwallet(){
-         contract.connectWallet().then(res=>{
-            if(res){
-                let account = res[0];
-                $('#connect-wallet').hide();
-                account = account.slice(0, 6) + '***' + account.slice(account.length - 4, account.length);
-                if(ethereum.networkVersion!='3'){
-                    $('#wrong').text('(Wrong Network!)')
-                }
-                $(".id").text(account);
-                isUnlock();
-                getWalletBalance();
-                getsymbol();
-                getLiquidity();
-                getNetLiquidity();
-                perLiquidityShare();
-                current(res[0],contract._pool_address);
-                getblock(contract._pool_address)
-                // poolSymbol();
-            }else{
-             alert('connection fail')
-            }
-        }).catch(err=>{
-         })
-        
-    }
-    setInterval(function(){
-        getblock(contract._pool_address)
-    },5000)
-    function perLiquidityShare(){
-        contract.perLiquidityShare().then(res=>{
-            if(res=='NaN'){
-                $('.liquiditysharevalue').text('---')
-            }else{
-                let share = +res
-                $('.liquiditysharevalue').text(share.toFixed(6))
-            }
-        })
-    }
-    function poolSymbol(){
-        contract.poolSymbol().then(res=>{
-            $('.basetoken').text(res)
-        })
     }
     function authorization(){
         let button = $('#Unlock');
@@ -124,11 +107,12 @@ $(function () {
             enableButton(button);
             isUnlock();
         }).catch(err=>{
+            console.log(err)
         })
     }
     function isUnlock(){
-        contract.getAllowance().then(res=>{
-            if(res.allowance!=='0'){
+        contract.isUnlocked().then(res=>{
+            if(res){
                 $('#addLiquidityButton').show()
                 $('#Unlock').hide()
             }else{
@@ -139,47 +123,47 @@ $(function () {
             
         })
     }
-    function getLiquidity(){
-        contract.getLiquidity().then(res=>{
-            let liquidity = +res;
-            maxremobeLiquidity=liquidity;
+    function getLiquidityInfo(){
+        contract.getLiquidityInfo().then(res=>{
+            maxRemovableShares=res.shares;
+            let liquidity = +res.shares;
+            let NetLiquidity = +res.poolLiquidity;
+            $('#total-liquidity').text(NetLiquidity.toFixed(2))
             $('.my-liquidity').text(liquidity.toFixed(2))
+            if(res.shareValue=='NaN'){
+                $('.liquiditysharevalue').text('---')
+            }else{
+                let share = +res.shareValue
+                $('.liquiditysharevalue').text(share.toFixed(6))
+            }
         }).catch(err=>{
+            console.log(err)
         })
     }
     function getWalletBalance(){
-        contract.getWalletBalanceOf().then(res=>{
-            let balance = +res.balance;
+        contract.getWalletBalance().then(res=>{
+            let balance = +res;
             $('#my-balance').text(balance.toFixed(2))
         }).catch(err=>{
+            console.log(err)
         })
     }
-    function getsymbol(){
-        contract.getSymbol().then(res=>{
-            $('.symbol').text(res)
+    function getSpecification(){
+        contract.getSpecification().then(res=>{
+            minAddLiquidity = res.minAddLiquidity;
+            $('.symbol').text(res.bSymbol)
         }).catch(err=>{
-        })
-    }
-    function getNetLiquidity(){
-        contract.getNetLiquidity().then(res=>{
-            let NetLiquidity = +res;
-            $('#total-liquidity').text(NetLiquidity.toFixed(2))
-        }).catch(err=>{
+            console.log(err)
         })
     }
     function addLiquidity(){
-        let minAddLiquidity = contract.getMinAddLiquidity();
         let button = $('#addLiquidityButton');
-        let maxliquidity = $('#my-balance').text()
         let marginInput = $('#liquidity-margin').val();
-        let isWalletConnected = contract.isWalletConnected()
+        console.log(marginInput,minAddLiquidity);
+        let isWalletConnected = address;
         if(!isWalletConnected){
             alert('Please Connect MetaMask wallet first!');
             return;
-        }
-        if(+marginInput>maxliquidity){
-        alert('not sufficient funds')
-        return;
         }
         if(+marginInput < +minAddLiquidity){
             alert(`The input liquidity shall not be less than ${minAddLiquidity}`)
@@ -191,34 +175,40 @@ $(function () {
         }
         disableButton(button);
         contract.addLiquidity(marginInput).then(res=>{
+            console.log(res)
+            if(!res.success){
+                alert('failure of transaction');
+            }
             enableButton(button)
             reset();
-       }).catch(err=>{
        })
     }
     $('#removeall').on('click',function(){
         let button = $('#removeLiquidityButton');
-        disableButton(button);
-        contract._getMaxRemoveLiquidity().then(res=>{
-            let maxRemoveLiquidity = res.maxRemoveLiquidity;
-            contract.removeLiquidity(maxRemoveLiquidity).then(res=>{
+            
+            disableButton(button);
+            console.log(maxRemovableShares)
+            contract.removeLiquidity(maxRemovableShares).then(res=>{
+                if(!res.success){
+                    alert('failure of transaction');
+                }
                 enableButton(button)
                 reset();
-        })
         })
         $('#confrim').modal('hide');
     })
     function removeLiquidity(){
         let button = $('#removeLiquidityButton');
         let marginInput = $('#liquidity-volume').val();
-        contract._getMaxRemoveLiquidity().then(res=>{
-            let maxRemoveLiquidity = res.maxRemoveLiquidity;
-            let isWalletConnected = contract.isWalletConnected()
+            let maxRemoveLiquidity = maxRemovableShares;
+            let isWalletConnected = address;
             if(!isWalletConnected){
                 alert('Please Connect MetaMask wallet first!');
                 return;
             }
+            console.log(maxRemoveLiquidity)
             let diff = (new BigNumber(maxRemoveLiquidity)).minus(new BigNumber(marginInput)).abs()
+            console.log(diff.lte(new BigNumber(100)))
             if(diff.lte(new BigNumber(100))){
                 $('#confrim').modal('show');
                 $('.all').text(`Want to remove all (${maxRemoveLiquidity} shares)?`)
@@ -228,6 +218,7 @@ $(function () {
                     marginInput=maxRemoveLiquidity
                 }
             }
+            console.log(+marginInput > +maxRemoveLiquidity)
             if(+marginInput > +maxRemoveLiquidity){
                 alert(`The input liquidity cannot exceed  ${maxRemoveLiquidity}`)
                 return;
@@ -238,17 +229,19 @@ $(function () {
             }
             disableButton(button);
             contract.removeLiquidity(marginInput).then(res=>{
+                if(!res.success){
+                    alert('failure of transaction');
+                }
                 enableButton(button)
                 reset();
         })
-        })
+        console.log(marginInput,maxremobeLiquidity);
+        
     }
     function reset(){
         getWalletBalance();
-        getsymbol();
-        getLiquidity();
-        getNetLiquidity();
-        perLiquidityShare();
+        getSpecification();
+        getLiquidityInfo();
         $('#liquidity-margin').val('');
         $('#liquidity-volume').val('')
     }

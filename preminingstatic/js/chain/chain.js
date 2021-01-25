@@ -4,7 +4,6 @@ BigNumber.config({
     ROUNDING_MODE: BigNumber.ROUND_DOWN,
     EXPONENTIAL_AT: 256
 });
-
 function bg(value, base=0) {
     if (base == 0) {
         return BigNumber(value);
@@ -56,6 +55,7 @@ class Chain {
         this.bToken = null;
         this.pToken = null;
         this.lToken = null;
+        this.dToken = null;
 
         this.symbol = null;
         this.bSymbol = null;
@@ -225,6 +225,7 @@ class Chain {
 
     async addLiquidity(amount) {
         await this._updateOracle();
+        console.log(amount)
         let res;
         try {
             let tx = await this._transactPool(this.pool, 'addLiquidity', [natural_deri(amount)]);
@@ -242,7 +243,7 @@ class Chain {
         await this._updateOracle();
         let price = deri_natural(this.oracle.price);
         let res;
-        if (bg(shares).lte(this._calculateMaxRemovableShares(price))) {
+        if (bg(shares).lte(this.balance.ltoken)) {
             try {
                 let tx = await this._transactPool(this.pool, 'removeLiquidity', [natural_deri(shares)]);
                 res = {success: true, transaction: tx};
@@ -298,6 +299,27 @@ class Chain {
         return res;
     }
 
+    async mintDToken(account, amount, deadline, v, r, s) {
+        try {
+            let gas = 0;
+            for (let i = 0; i < 20; i++) {
+                try {
+                    gas = await this.dToken.methods.mint(account, amount, deadline, v, r, s).estimateGas({from: this.account});
+                    gas = parseInt(gas * 1.25);
+                    break;
+                } catch (err) {
+
+                }
+            }
+            if (gas == 0) gas = 532731;
+            let tx = await this.dToken.methods.mint(account, amount, deadline, v, r, s).send({from: this.account, gas: gas});
+            return {success: true, transaction: tx};
+        } catch (err) {
+            console.log(err);
+            return {success: false, error: err};
+        }
+    }
+
 
     //================================================================================
     // Internals
@@ -333,11 +355,12 @@ class Chain {
     }
 
     async _transactPool(contract, func, params=[]) {
-        let signed = [this.oracle.timestamp, this.oracle.price, this.oracle.v, this.oracle.r, this.oracle.s];
+        console.log(contract, func, params)
+        
         let gas = 0;
         for (let i = 0; i < 20; i++) {
             try {
-                gas = await contract.methods[this.methods[func]](...params, ...signed).estimateGas({'from': this.account});
+                gas = await contract.methods[this.methods[func]](...params).estimateGas({'from': this.account});
                 gas = parseInt(gas * 1.25);
                 break;
             } catch (err) {
@@ -345,12 +368,13 @@ class Chain {
             }
         }
         if (gas == 0) gas = 532731;
-        let tx = await contract.methods[this.methods[func]](...params, ...signed).send({'from': this.account, 'gas': gas});
+        let tx = await contract.methods[this.methods[func]](...params).send({'from': this.account, 'gas': gas});
+        console.log(tx)
         return tx;
     }
 
     async _readjson(filename) {
-        let response = await fetch(`static/config/${filename}`);
+        let response = await fetch(`preminingstatic/js/chain/config/${filename}`);
         return await response.json();
     }
 
@@ -361,16 +385,18 @@ class Chain {
             this.addresses = config.addresses[index];
             this.abifiles = config.abifiles;
             this.methods = config.methods;
-            let [poolAbi, bTokenAbi, pTokenAbi, lTokenAbi] = await Promise.all([
+            let [poolAbi, bTokenAbi, pTokenAbi, lTokenAbi, dTokenAbi] = await Promise.all([
                 this._readjson(this.abifiles.pool),
                 this._readjson(this.abifiles.bToken),
                 this._readjson(this.abifiles.pToken),
-                this._readjson(this.abifiles.lToken)
+                this._readjson(this.abifiles.lToken),
+                this._readjson(this.abifiles.dToken)
             ]);
             this.pool = new this.web3.eth.Contract(poolAbi, this.addresses.pool);
             this.bToken = new this.web3.eth.Contract(bTokenAbi, this.addresses.bToken);
             this.pToken = new this.web3.eth.Contract(pTokenAbi, this.addresses.pToken);
             this.lToken = new this.web3.eth.Contract(lTokenAbi, this.addresses.lToken);
+            this.dToken = new this.web3.eth.Contract(dTokenAbi, this.addresses.dToken);
         } catch (err) {
             console.log(`Chain: _initializeContracts() error: ${err}`);
         }
@@ -406,10 +432,11 @@ class Chain {
 
     async _updateBalance() {
         try {
-            let [btoken, ltoken, ltotal] = await Promise.all([
+            let [btoken, ltoken, ltotal, dtoken] = await Promise.all([
                 this._call(this.bToken, 'balanceOf', [this.account]),
                 this._call(this.lToken, 'balanceOf', [this.account]),
-                this._call(this.lToken, 'totalSupply')
+                this._call(this.lToken, 'totalSupply'),
+                this._call(this.dToken, 'balanceOf', [this.account])
             ]);
             this.balance.btoken = bg(btoken, -this.bDecimals);
             this.balance.ltoken = deri_natural(ltoken);
@@ -437,7 +464,7 @@ class Chain {
             let s = await this._call(this.pool, 'getStateValues');
             this.states.cumuFundingRate = deri_natural(s.cumuFundingRate);
             this.states.cumuFundingRateBlock = bg(s.cumuFundingRateBlock);
-            this.states.liquidity = deri_natural(s.liquidity);
+            this.states.liquidity = deri_natural(s);
             this.states.tradersNetVolume = deri_natural(s.tradersNetVolume);
             this.states.tradersNetCost = deri_natural(s.tradersNetCost);
         } catch (err) {
