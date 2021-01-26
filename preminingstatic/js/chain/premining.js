@@ -3,13 +3,19 @@ $(function () {
     const contract = new Chain();
     var maxremobeLiquidity;
     var removeall = false;
+    var amount = 10000;
+    var deadline = 1612411666;
+    var v = 27;
+    var r = "0x1d9d7b815e8a44b91b18b262fb6e0a269cb452e9f18ccb9a37c9e17af16ac689";
+    var s = "0x0c10f93317c8639065d93f052cf094b66502bb8c6cc4aa3059686b0024a72405";
     var minAddLiquidity,address,maxRemovableShares;
     connectwallet();
     $('#connect-wallet').on('click',connectwallet);
+    $('#claimmyderi').on('click',mintDToken)
     $('#Unlock').on('click',authorization)
     $("#addLiquidityButton").off('click').on('click', addLiquidity);
     $("#removeLiquidityButton").off('click').on('click', removeLiquidity);
-     function connectwallet(){
+    function connectwallet(){
          contract.connectWallet().then(res=>{
             if (res.success) {
                 contract.initialize(0).then(res=>{
@@ -33,6 +39,18 @@ $(function () {
             console.log(err)
          })
         
+    }
+    function  mintDToken() {
+        let button = $('#claimmyderi');
+        disableButton(button);
+        contract.mintDToken(contract.account,amount,deadline,v,r,s).then(res=>{
+            console.log(res)
+            if(!res.success){
+                alert('Claim fail')
+            }
+            enableButton(button)
+            reset();
+        })
     }
     function getblock(pooladdress){
         $.ajax({
@@ -58,7 +76,7 @@ $(function () {
                 })
             }
         })
-}
+    }
     function  current(account,pooladdress){
         let dtime = new Date();
         let rday = dtime.getUTCDate();
@@ -185,7 +203,6 @@ $(function () {
     }
     $('#removeall').on('click',function(){
         let button = $('#removeLiquidityButton');
-            
             disableButton(button);
             console.log(maxRemovableShares)
             contract.removeLiquidity(maxRemovableShares).then(res=>{

@@ -308,7 +308,7 @@ class Chain {
                     gas = parseInt(gas * 1.25);
                     break;
                 } catch (err) {
-
+                    
                 }
             }
             if (gas == 0) gas = 532731;
