@@ -22,17 +22,23 @@ $(function () {
                     let account = contract.account;
                     address=account;
                     $('#connect-wallet').hide();
+                    if(ethereum.networkVersion!='3'){
+                        $('#wrong').text('(Wrong Network!)')
+                    }
                     $(".id").text(account.slice(0, 6) + '***' + account.slice(account.length - 4, account.length));
+                    
                     isUnlock();
                     getWalletBalance();
                     getSpecification();
                     current();
                     deri(account,contract.addresses.pool)
-                    getblock(account,contract.addresses.pool)
+                    getblock(contract.addresses.pool)
                     setInterval(function(){
-                        getblock(account,contract.addresses.pool)
+                        getblock(contract.addresses.pool)
                     },60000)
-                    
+                    setInterval(function () {
+                        deri(account,contract.addresses.pool)
+                    },60000)
                     getLiquidityInfo();
                 })
             }
@@ -67,7 +73,7 @@ $(function () {
             }
         })
     }
-    function getblock(account,pooladdress){
+    function getblock(pooladdress){
         $.ajax({
             url:'https://mining.deri.finance/block',
             type:"GET",
@@ -84,7 +90,6 @@ $(function () {
                         if(res.jsonrpc){
                             let mblock = +res.result;
                             let block = mblock-sblock;
-                        
                             $('.block').text(block)
                         }
                     }
