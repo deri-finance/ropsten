@@ -121,7 +121,7 @@ $(function () {
     function authorization(){
         let button = $('#Unlock');
         disableButton(button);
-        contract.approveMax().then(res=>{
+        contract.unlock().then(res=>{
             enableButton(button);
             isUnlock();
         }).catch(err=>{
