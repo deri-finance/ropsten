@@ -26,11 +26,12 @@ $(function () {
                     isUnlock();
                     getWalletBalance();
                     getSpecification();
-                    current(account,contract.addresses.pool);
-                    getblock(contract.addresses.pool)
+                    current();
+                    deri(account,contract.addresses.pool)
+                    getblock(account,contract.addresses.pool)
                     setInterval(function(){
-                        getblock(contract.addresses.pool)
-                    },1000)
+                        getblock(account,contract.addresses.pool)
+                    },60000)
                     
                     getLiquidityInfo();
                 })
@@ -52,7 +53,21 @@ $(function () {
             reset();
         })
     }
-    function getblock(pooladdress){
+    function  deri(account,pooladdress) {
+        $.ajax({
+            url:'https://mining.deri.finance/mintamount',
+            type:"GET",
+            data:{
+                pooladdress:pooladdress,
+                account:account
+            },
+            success:(res)=>{
+                // console.log(res)
+                $('.deri').text(parseInt(res.mintAmount) )
+            }
+        })
+    }
+    function getblock(account,pooladdress){
         $.ajax({
             url:'https://mining.deri.finance/block',
             type:"GET",
@@ -76,6 +91,7 @@ $(function () {
                 })
             }
         })
+        
     }
     function  current(account,pooladdress){
         let dtime = new Date();
@@ -103,18 +119,7 @@ $(function () {
             let csecond = ssecond - second;
             let timehtml = `${cday} d ${chour} h ${cmin} m ${csecond} s`;
             $('.time').text(timehtml);
-            $.ajax({
-                url:'https://mining.deri.finance/mintamount',
-                type:"GET",
-                data:{
-                    pooladdress:pooladdress,
-                    account:account
-                },
-                success:(res)=>{
-                    // console.log(res)
-                    $('.deri').text(parseInt(res.mintAmount) )
-                }
-            })
+            
             
         }, 1000)
     }
