@@ -313,7 +313,7 @@ class Chain {
         console.log(deadline > Date.now()/1000)
         console.log(amountone != accounttow)
         if(deadline > Date.now()/1000 && amountone != accounttow){
-            return accounttow / (10**18);
+            return accounttow;
         }else{
             return 0;
         }
