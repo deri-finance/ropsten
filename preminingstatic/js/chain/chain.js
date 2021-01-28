@@ -315,8 +315,6 @@ class Chain {
         }
     }
     async getClainmed(){
-        let config = await this._readjson('config.json');
-        this.abifiles = config.abifiles;
         let arramount =[];
         let amount;
         let getClainmedContract = new this.web3.eth.Contract(this.dTokenabi,this.deriAddress);
@@ -359,6 +357,7 @@ class Chain {
             arrinfo = res
         })
         let info = arrinfo[arrinfo.length-1]
+        console.log(info)
         let account = this.account;
         let amount = info.returnValues.amount;
         let deadline = info.returnValues.deadline;
@@ -376,6 +375,7 @@ class Chain {
     }
     async mintDToken() {
         let info = await this.getMintProof();
+        
         let account = this.account;
         let amount = info.amount;
         let deadline = info.deadline;
