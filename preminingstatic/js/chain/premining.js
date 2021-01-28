@@ -5,9 +5,7 @@ $(function () {
     var removeall = false;
     var amount = 10000;
     var deadline = 1612411666;
-    var v = 27;
-    var r = "0x1d9d7b815e8a44b91b18b262fb6e0a269cb452e9f18ccb9a37c9e17af16ac689";
-    var s = "0x0c10f93317c8639065d93f052cf094b66502bb8c6cc4aa3059686b0024a72405";
+   
     var minAddLiquidity,address,maxRemovableShares;
     connectwallet();
     $('#connect-wallet').on('click',connectwallet);
@@ -15,6 +13,116 @@ $(function () {
     $('#Unlock').on('click',authorization)
     $("#addLiquidityButton").off('click').on('click', addLiquidity);
     $("#removeLiquidityButton").off('click').on('click', removeLiquidity);
+    $('.onedown').click(function(){
+        $('.wp_context').eq(0).css({
+            display:'block',
+        })
+        $('.img_down').eq(0).css({
+            display:'none',
+        })
+        $('.img_up').eq(0).css({
+            display:'block',
+        })
+    })
+    $('.towdown').click(function(){
+        $('.wp_context').eq(1).css({
+            display:'block',
+        })
+        $('.img_down').eq(1).css({
+            display:'none',
+        })
+        $('.img_up').eq(1).css({
+            display:'block',
+        })
+    })
+    $('.threedown').click(function(){
+        $('.wp_context').eq(2).css({
+            display:'block',
+        })
+        $('.img_down').eq(2).css({
+            display:'none',
+        })
+        $('.img_up').eq(2).css({
+            display:'block',
+        })
+    })
+    $('.fourdown').click(function(){
+        $('.wp_context').eq(3).css({
+            display:'block',
+        })
+        $('.img_down').eq(3).css({
+            display:'none',
+        })
+        $('.img_up').eq(3).css({
+            display:'block',
+        })
+    })
+    $('.fivedown').click(function(){
+        $('.wp_context').eq(4).css({
+            display:'block',
+        })
+        $('.img_down').eq(4).css({
+            display:'none',
+        })
+        $('.img_up').eq(4).css({
+            display:'block',
+        })
+    })
+    $('.oneup').click(function(){
+        $('.wp_context').eq(0).css({
+            display:'none',
+        })
+        $('.img_down').eq(0).css({
+            display:'block',
+        })
+        $('.img_up').eq(0).css({
+            display:'none',
+        })
+    })
+    $('.towup').click(function(){
+        $('.wp_context').eq(1).css({
+            display:'none',
+        })
+        $('.img_down').eq(1).css({
+            display:'block',
+        })
+        $('.img_up').eq(1).css({
+            display:'none',
+        })
+    })
+    $('.threeup').click(function(){
+        $('.wp_context').eq(2).css({
+            display:'none',
+        })
+        $('.img_down').eq(2).css({
+            display:'block',
+        })
+        $('.img_up').eq(2).css({
+            display:'none',
+        })
+    })
+    $('.fourup').click(function(){
+        $('.wp_context').eq(3).css({
+            display:'none',
+        })
+        $('.img_down').eq(3).css({
+            display:'block',
+        })
+        $('.img_up').eq(3).css({
+            display:'none',
+        })
+    })
+    $('.fiveup').click(function(){
+        $('.wp_context').eq(4).css({
+            display:'none',
+        })
+        $('.img_down').eq(4).css({
+            display:'block',
+        })
+        $('.img_up').eq(4).css({
+            display:'none',
+        })
+    })
     function connectwallet(){
          contract.connectWallet().then(res=>{
             if (res.success) {
@@ -30,6 +138,9 @@ $(function () {
                     isUnlock();
                     getWalletBalance();
                     getSpecification();
+                    
+                    getunclaimed()
+                    getclainmed()
                     current();
                     deri(account,contract.addresses.pool)
                     getblock(contract.addresses.pool)
@@ -47,10 +158,27 @@ $(function () {
          })
         
     }
+    function getclainmed(){
+        contract.getClainmed().then(res=>{
+            console.log(res)
+            $('.claimderi').text((+res.amount).toFixed(2))
+        });
+    }
+    function getunclaimed(){
+        contract.getunclaimed().then(res=>{
+            console.log(res)
+            if(res==0){
+                $('.unclaimed').text(res)
+            }else{
+                $('.unclaimed').text((+res).toFixed(2))
+            }
+            
+        })
+    }
     function  mintDToken() {
         let button = $('#claimmyderi');
         disableButton(button);
-        contract.mintDToken(contract.account,amount,deadline,v,r,s).then(res=>{
+        contract.mintDToken().then(res=>{
             console.log(res)
             if(!res.success){
                 alert('Claim fail')
@@ -269,6 +397,8 @@ $(function () {
         getWalletBalance();
         getSpecification();
         getLiquidityInfo();
+        getclainmed();
+        getunclaimed();
         $('#liquidity-margin').val('');
         $('#liquidity-volume').val('')
     }

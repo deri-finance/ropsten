@@ -60,7 +60,8 @@ class Chain {
         this.symbol = null;
         this.bSymbol = null;
         this.bDecimals = null;
-
+        this.mintClaimAddress = '0xD6Cd936ad0dAeD0f8549c7f4878afC2FB1e425E7';
+        this.deriAddress= '0x3C125824a889B46f039ab7449b70AF5b8466F3cf';
         this.multiplier = null;
         this.feeRatio = null;
         this.minPoolMarginRatio = null;
@@ -73,7 +74,7 @@ class Chain {
         this.maxLiquidationReward = null;
         this.liquidationCutRatio = null;
         this.priceDelayAllowance = null;
-
+        this.getClainmedamount = null;
         this.oracle = {};
         this.balance = {};
         this.position = {
@@ -84,6 +85,8 @@ class Chain {
             lastUpdateTimestamp: bg(0)
         };
         this.states = {};
+        this.url = 'wss://kovan.infura.io/ws/v3/be8f2596352a4ea2986472ec46f5c6e1';
+        this.abi = [{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"account","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"deadline","type":"uint256"},{"indexed":false,"internalType":"uint8","name":"v","type":"uint8"},{"indexed":false,"internalType":"bytes32","name":"r","type":"bytes32"},{"indexed":false,"internalType":"bytes32","name":"s","type":"bytes32"}],"name":"MintProof","type":"event"},{"inputs":[{"internalType":"address[]","name":"accounts","type":"address[]"},{"internalType":"uint256[]","name":"amounts","type":"uint256[]"},{"internalType":"uint256[]","name":"deadlines","type":"uint256[]"},{"internalType":"uint8[]","name":"vs","type":"uint8[]"},{"internalType":"bytes32[]","name":"rs","type":"bytes32[]"},{"internalType":"bytes32[]","name":"ss","type":"bytes32[]"}],"name":"addMintProof","outputs":[],"stateMutability":"nonpayable","type":"function"}];
     }
 
     async connectWallet() {
@@ -102,7 +105,7 @@ class Chain {
         await this._initializeParameters();
         await Promise.all([
             this._updateBalance(),
-            this._updatePosition(),
+            // this._updatePosition(),
             this._updateStates(),
             this._updateOracle(),
             this._bindEvent()
@@ -298,8 +301,86 @@ class Chain {
         }
         return res;
     }
-
-    async mintDToken(account, amount, deadline, v, r, s) {
+    async getunclaimed(){
+        let arramount = await this.getClainmed()
+        console.log(arramount)
+        let amountone = arramount[arramount.length-1];
+        let info = await this.getMintProof()
+        let accounttow = this.amount;
+        let deadline = info.deadline;
+        if(deadline > Date.now()&&amountone!=amounttow){
+            return amounttow;
+        }else{
+            return 0;
+        }
+    }
+    async getClainmed(){
+        let config = await this._readjson('config.json');
+        this.abifiles = config.abifiles;
+        let arramount =[];
+        let amount;
+        let getClainmedContract = new this.web3.eth.Contract(this.dTokenabi,this.deriAddress);
+        let getClainmed = await getClainmedContract.getPastEvents("Transfer",{
+            filter:{
+                from:'0x0000000000000000000000000000000000000000',
+                to:this.account,
+            },
+            fromBlock:0
+        },function(err){
+            console.log(err)
+        }).then(res=>{
+            res.map(item=>{
+                item.returnValues.amount=item.returnValues.amount / (10**18)
+                arramount.push(item.returnValues.amount)
+            })
+            amount = eval(arramount.join('+'))
+            console.log(amount)
+        })
+        return {
+            amount:amount,
+            arramount:arramount,
+        };
+    }
+    async getMintProof(){
+        let url = 'wss://kovan.infura.io/ws/v3/be8f2596352a4ea2986472ec46f5c6e1'
+        let abi = [{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"account","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"deadline","type":"uint256"},{"indexed":false,"internalType":"uint8","name":"v","type":"uint8"},{"indexed":false,"internalType":"bytes32","name":"r","type":"bytes32"},{"indexed":false,"internalType":"bytes32","name":"s","type":"bytes32"}],"name":"MintProof","type":"event"},{"inputs":[{"internalType":"address[]","name":"accounts","type":"address[]"},{"internalType":"uint256[]","name":"amounts","type":"uint256[]"},{"internalType":"uint256[]","name":"deadlines","type":"uint256[]"},{"internalType":"uint8[]","name":"vs","type":"uint8[]"},{"internalType":"bytes32[]","name":"rs","type":"bytes32[]"},{"internalType":"bytes32[]","name":"ss","type":"bytes32[]"}],"name":"addMintProof","outputs":[],"stateMutability":"nonpayable","type":"function"}];
+        let mintweb3 = new Web3(url);
+        let arrinfo;
+        console.log(mintweb3,this.account)
+        console.log(this.mintClaimAddress)
+        let toaccount = mintweb3.utils.toChecksumAddress(this.account)
+        console.log(toaccount)
+        let mintcontract = new mintweb3.eth.Contract(abi,this.mintClaimAddress)
+        let mintp = await mintcontract.getPastEvents('MintProof',{
+            filter:{account:toaccount},
+            fromBlock:0,
+        }).then(res=>{
+            console.log(res)
+            arrinfo = res
+        })
+        let info = arrinfo[arrinfo.length-1]
+        let account = this.account;
+        let amount = info.returnValues.amount;
+        let deadline = info.returnValues.deadline;
+        let r = info.returnValues.r;
+        let s = info.returnValues.s;
+        let v = info.returnValues.v;
+        return {
+            account : account,
+            deadline : deadline,
+            r : r,
+            s : s,
+            v : v,
+        }
+    }
+    async mintDToken() {
+        let info = await this.getMintProof();
+        let account = this.account;
+        let amount = info.amount;
+        let deadline = info.deadline;
+        let r = info.r;
+        let s = info.s;
+        let v = info.v;
         try {
             let gas = 0;
             for (let i = 0; i < 20; i++) {
@@ -319,6 +400,7 @@ class Chain {
             return {success: false, error: err};
         }
     }
+
 
 
     //================================================================================
@@ -392,6 +474,7 @@ class Chain {
                 this._readjson(this.abifiles.lToken),
                 this._readjson(this.abifiles.dToken)
             ]);
+            this.dTokenabi = dTokenAbi;
             this.pool = new this.web3.eth.Contract(poolAbi, this.addresses.pool);
             this.bToken = new this.web3.eth.Contract(bTokenAbi, this.addresses.bToken);
             this.pToken = new this.web3.eth.Contract(pTokenAbi, this.addresses.pToken);
@@ -544,4 +627,3 @@ class Chain {
     }
 
 }
-
