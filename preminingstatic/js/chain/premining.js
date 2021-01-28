@@ -165,7 +165,7 @@ $(function () {
         });
     }
     function getunclaimed(){
-        contract.getunclaimed().then(res=>{
+        contract.getunClaimed().then(res=>{
             console.log(res)
             if(res==0){
                 $('.unclaimed').text(res)

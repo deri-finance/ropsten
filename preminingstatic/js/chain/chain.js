@@ -301,14 +301,15 @@ class Chain {
         }
         return res;
     }
-    async getunclaimed(){
+    async getunClaimed(){
         let arramount = await this.getClainmed()
         console.log(arramount)
         let amountone = arramount[arramount.length-1];
         let info = await this.getMintProof()
         let accounttow = this.amount;
         let deadline = info.deadline;
-        if(deadline > Date.now()&&amountone!=amounttow){
+        
+        if(deadline > Date.now() && amountone != accounttow){
             return amounttow;
         }else{
             return 0;
@@ -360,6 +361,7 @@ class Chain {
         console.log(info)
         let account = this.account;
         let amount = info.returnValues.amount;
+        this.amount = amount;
         let deadline = info.returnValues.deadline;
         let r = info.returnValues.r;
         let s = info.returnValues.s;
