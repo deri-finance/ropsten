@@ -304,13 +304,16 @@ class Chain {
     async getunClaimed(){
         let arramount = await this.getClainmed()
         console.log(arramount)
-        let amountone = arramount.arramount[arramount.length-1];
+        let amountone = arramount.arramount[0];
         let info = await this.getMintProof()
         let accounttow = this.amount;
         let deadline = info.deadline;
-        
-        if(deadline > Date.now() && amountone != accounttow){
-            return amounttow;
+        console.log(amountone,accounttow)
+        console.log(deadline,Date.now()/1000)
+        console.log(deadline > Date.now()/1000)
+        console.log(amountone != accounttow)
+        if(deadline > Date.now()/1000 && amountone != accounttow){
+            return accounttow / (10**18);
         }else{
             return 0;
         }
@@ -328,6 +331,7 @@ class Chain {
         },function(err){
             console.log(err)
         }).then(res=>{
+            console.log(res)
             res.map(item=>{
                 item.returnValues.amount=item.returnValues.amount / (10**18)
                 arramount.push(item.returnValues.amount)
@@ -362,6 +366,7 @@ class Chain {
         let account = this.account;
         let amount = info.returnValues.amount;
         this.amount = amount;
+        this.amount = this.amount/(10**18)
         let deadline = info.returnValues.deadline;
         let r = info.returnValues.r;
         let s = info.returnValues.s;

@@ -160,8 +160,14 @@ $(function () {
     }
     function getclainmed(){
         contract.getClainmed().then(res=>{
-            console.log(res)
-            $('.claimderi').text((+res.amount).toFixed(2))
+            console.log(res.amount=='undefined')
+            console.log(!(res.amount=='undefined'))
+            if(!(res.amount=='undefined')){
+                $('.claimderi').text((+res.amount).toFixed(2))
+            }else{
+                $('.claimderi').text('0')
+            }
+            
         });
     }
     function getunclaimed(){
