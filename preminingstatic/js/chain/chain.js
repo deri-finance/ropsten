@@ -304,7 +304,7 @@ class Chain {
     async getunClaimed(){
         let arramount = await this.getClainmed()
         console.log(arramount)
-        let amountone = arramount[arramount.length-1];
+        let amountone = arramount.arramount[arramount.length-1];
         let info = await this.getMintProof()
         let accounttow = this.amount;
         let deadline = info.deadline;
