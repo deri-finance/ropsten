@@ -368,6 +368,7 @@ class Chain {
         return {
             account : account,
             deadline : deadline,
+            amount:amount,
             r : r,
             s : s,
             v : v,
