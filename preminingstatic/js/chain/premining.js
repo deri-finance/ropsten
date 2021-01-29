@@ -1,129 +1,15 @@
 
 $(function () {
     const contract = new Chain();
-    var maxremobeLiquidity;
-    var removeall = false;
-    var amount = 10000;
-    var deadline = 1612411666;
-   
+    var removeAll = false;
     var minAddLiquidity,address,maxRemovableShares;
-    connectwallet();
-    $('#connect-wallet').on('click',connectwallet);
+    connectWallet();
+    $('#connect-wallet').on('click',connectWallet);
     $('#claimmyderi').on('click',mintDToken)
     $('#Unlock').on('click',authorization)
     $("#addLiquidityButton").off('click').on('click', addLiquidity);
     $("#removeLiquidityButton").off('click').on('click', removeLiquidity);
-    $('.onedown').click(function(){
-        $('.wp_context').eq(0).css({
-            display:'block',
-        })
-        $('.img_down').eq(0).css({
-            display:'none',
-        })
-        $('.img_up').eq(0).css({
-            display:'block',
-        })
-    })
-    $('.towdown').click(function(){
-        $('.wp_context').eq(1).css({
-            display:'block',
-        })
-        $('.img_down').eq(1).css({
-            display:'none',
-        })
-        $('.img_up').eq(1).css({
-            display:'block',
-        })
-    })
-    $('.threedown').click(function(){
-        $('.wp_context').eq(2).css({
-            display:'block',
-        })
-        $('.img_down').eq(2).css({
-            display:'none',
-        })
-        $('.img_up').eq(2).css({
-            display:'block',
-        })
-    })
-    $('.fourdown').click(function(){
-        $('.wp_context').eq(3).css({
-            display:'block',
-        })
-        $('.img_down').eq(3).css({
-            display:'none',
-        })
-        $('.img_up').eq(3).css({
-            display:'block',
-        })
-    })
-    $('.fivedown').click(function(){
-        $('.wp_context').eq(4).css({
-            display:'block',
-        })
-        $('.img_down').eq(4).css({
-            display:'none',
-        })
-        $('.img_up').eq(4).css({
-            display:'block',
-        })
-    })
-    $('.oneup').click(function(){
-        $('.wp_context').eq(0).css({
-            display:'none',
-        })
-        $('.img_down').eq(0).css({
-            display:'block',
-        })
-        $('.img_up').eq(0).css({
-            display:'none',
-        })
-    })
-    $('.towup').click(function(){
-        $('.wp_context').eq(1).css({
-            display:'none',
-        })
-        $('.img_down').eq(1).css({
-            display:'block',
-        })
-        $('.img_up').eq(1).css({
-            display:'none',
-        })
-    })
-    $('.threeup').click(function(){
-        $('.wp_context').eq(2).css({
-            display:'none',
-        })
-        $('.img_down').eq(2).css({
-            display:'block',
-        })
-        $('.img_up').eq(2).css({
-            display:'none',
-        })
-    })
-    $('.fourup').click(function(){
-        $('.wp_context').eq(3).css({
-            display:'none',
-        })
-        $('.img_down').eq(3).css({
-            display:'block',
-        })
-        $('.img_up').eq(3).css({
-            display:'none',
-        })
-    })
-    $('.fiveup').click(function(){
-        $('.wp_context').eq(4).css({
-            display:'none',
-        })
-        $('.img_down').eq(4).css({
-            display:'block',
-        })
-        $('.img_up').eq(4).css({
-            display:'none',
-        })
-    })
-    function connectwallet(){
+    function connectWallet(){
          contract.connectWallet().then(res=>{
             if (res.success) {
                 contract.initialize(0).then(res=>{
@@ -139,13 +25,13 @@ $(function () {
                     getWalletBalance();
                     getSpecification();
                     
-                    getunclaimed()
-                    getclainmed()
+                    getUnClaimed()
+                    getClaimed()
                     current();
                     deri(account,contract.addresses.pool)
-                    getblock(contract.addresses.pool)
+                    getBlock(contract.addresses.pool)
                     setInterval(function(){
-                        getblock(contract.addresses.pool)
+                        getBlock(contract.addresses.pool)
                     },60000)
                     setInterval(function () {
                         deri(account,contract.addresses.pool)
@@ -158,12 +44,9 @@ $(function () {
          })
         
     }
-    function getclainmed(){
-        contract.getClainmed().then(res=>{
-            console.log(res.amount)
-            console.log(res.amount == undefined)
-            console.log(!(res.amount== undefined))
-            if(!(res.amount==undefined)){
+    function getClaimed(){
+        contract.getClaimed().then(res => {
+            if(!(res.amount == undefined)){
                 $('.claimderi').text((+res.amount).toFixed(2))
             }else{
                 $('.claimderi').text('0')
@@ -171,10 +54,9 @@ $(function () {
             
         });
     }
-    function getunclaimed(){
-        contract.getunClaimed().then(res=>{
-            console.log(res)
-            if(res==0){
+    function getUnClaimed(){
+        contract.getUnClaimed().then(res=>{
+            if(res == 0){
                 $('.unclaimed').text(res)
             }else{
                 $('.unclaimed').text((+res).toFixed(2))
@@ -188,7 +70,7 @@ $(function () {
         contract.mintDToken().then(res=>{
             console.log(res)
             if(!res.success){
-                alert('Claim fail')
+                alert('Claim failed')
             }
             enableButton(button)
             reset();
@@ -208,7 +90,7 @@ $(function () {
             }
         })
     }
-    function getblock(pooladdress){
+    function getBlock(pooladdress){
         $.ajax({
             url:'https://mining.deri.finance/block',
             type:"GET",
@@ -368,13 +250,12 @@ $(function () {
                 alert('Please Connect MetaMask wallet first!');
                 return;
             }
-            console.log(maxRemoveLiquidity)
             let diff = (new BigNumber(maxRemoveLiquidity)).minus(new BigNumber(marginInput)).abs()
             console.log(diff.lte(new BigNumber(100)))
             if(diff.lte(new BigNumber(100))){
                 $('#confrim').modal('show');
                 $('.all').text(`Want to remove all (${maxRemoveLiquidity} shares)?`)
-                if(!removeall){
+                if(!removeAll){
                     return; 
                 }else{
                     marginInput=maxRemoveLiquidity
@@ -397,17 +278,125 @@ $(function () {
                 enableButton(button)
                 reset();
         })
-        console.log(marginInput,maxremobeLiquidity);
         
     }
     function reset(){
         getWalletBalance();
         getSpecification();
         getLiquidityInfo();
-        getclainmed();
-        getunclaimed();
+        getClaimed();
+        getUnClaimed();
         $('#liquidity-margin').val('');
         $('#liquidity-volume').val('')
     }
-   
+    $('.onedown').click(function(){
+        $('.wp_context').eq(0).css({
+            display:'block',
+        })
+        $('.img_down').eq(0).css({
+            display:'none',
+        })
+        $('.img_up').eq(0).css({
+            display:'block',
+        })
+    })
+    $('.towdown').click(function(){
+        $('.wp_context').eq(1).css({
+            display:'block',
+        })
+        $('.img_down').eq(1).css({
+            display:'none',
+        })
+        $('.img_up').eq(1).css({
+            display:'block',
+        })
+    })
+    $('.threedown').click(function(){
+        $('.wp_context').eq(2).css({
+            display:'block',
+        })
+        $('.img_down').eq(2).css({
+            display:'none',
+        })
+        $('.img_up').eq(2).css({
+            display:'block',
+        })
+    })
+    $('.fourdown').click(function(){
+        $('.wp_context').eq(3).css({
+            display:'block',
+        })
+        $('.img_down').eq(3).css({
+            display:'none',
+        })
+        $('.img_up').eq(3).css({
+            display:'block',
+        })
+    })
+    $('.fivedown').click(function(){
+        $('.wp_context').eq(4).css({
+            display:'block',
+        })
+        $('.img_down').eq(4).css({
+            display:'none',
+        })
+        $('.img_up').eq(4).css({
+            display:'block',
+        })
+    })
+    $('.oneup').click(function(){
+        $('.wp_context').eq(0).css({
+            display:'none',
+        })
+        $('.img_down').eq(0).css({
+            display:'block',
+        })
+        $('.img_up').eq(0).css({
+            display:'none',
+        })
+    })
+    $('.towup').click(function(){
+        $('.wp_context').eq(1).css({
+            display:'none',
+        })
+        $('.img_down').eq(1).css({
+            display:'block',
+        })
+        $('.img_up').eq(1).css({
+            display:'none',
+        })
+    })
+    $('.threeup').click(function(){
+        $('.wp_context').eq(2).css({
+            display:'none',
+        })
+        $('.img_down').eq(2).css({
+            display:'block',
+        })
+        $('.img_up').eq(2).css({
+            display:'none',
+        })
+    })
+    $('.fourup').click(function(){
+        $('.wp_context').eq(3).css({
+            display:'none',
+        })
+        $('.img_down').eq(3).css({
+            display:'block',
+        })
+        $('.img_up').eq(3).css({
+            display:'none',
+        })
+    })
+    $('.fiveup').click(function(){
+        $('.wp_context').eq(4).css({
+            display:'none',
+        })
+        $('.img_down').eq(4).css({
+            display:'block',
+        })
+        $('.img_up').eq(4).css({
+            display:'none',
+        })
+    })
 })

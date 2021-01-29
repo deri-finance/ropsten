@@ -301,68 +301,57 @@ class Chain {
         }
         return res;
     }
-    async getunClaimed(){
-        let arramount = await this.getClainmed()
-        console.log(arramount)
-        let amountone = arramount.arramount[0];
+    async getUnClaimed(){
+        let amounts = await this.getClaimed()
+        let beforAmount = amounts.amounts[amounts.amounts.length-1];
         let info = await this.getMintProof()
-        let accounttow = this.amount;
+        let currentAmount = this.amount;
         let deadline = info.deadline;
-        console.log(amountone,accounttow)
-        console.log(deadline,Date.now()/1000)
-        console.log(deadline > Date.now()/1000)
-        console.log(amountone != accounttow)
-        if(deadline > Date.now()/1000 && amountone != accounttow){
-            return accounttow;
+        if(deadline > Date.now()/1000 && beforAmount != currentAmount){
+            return currentAmount;
         }else{
             return 0;
         }
     }
-    async getClainmed(){
-        let arramount =[];
+    async getClaimed(){
+        let amounts = [];
         let amount;
-        let getClainmedContract = new this.web3.eth.Contract(this.dTokenabi,this.deriAddress);
-        let getClainmed = await getClainmedContract.getPastEvents("Transfer",{
-            filter:{
-                from:'0x0000000000000000000000000000000000000000',
-                to:this.account,
+        let getClaimedContract = new this.web3.eth.Contract(this.dTokenAbi,this.deriAddress);
+        let getClaimed = await getClaimedContract.getPastEvents("Transfer",{
+            filter: {
+                from: '0x0000000000000000000000000000000000000000',
+                to: this.account,
             },
-            fromBlock:0
-        },function(err){
+            fromBlock: 0
+        }, function(err){
             console.log(err)
-        }).then(res=>{
-            console.log(res)
-            res.map(item=>{
-                item.returnValues.amount=item.returnValues.amount / (10**18)
-                arramount.push(item.returnValues.amount)
+        }).then(res => {
+            res.map(item => {
+                item.returnValues.amount = item.returnValues.amount / (10**18)
+                amounts.push(item.returnValues.amount)
             })
-            amount = eval(arramount.join('+'))
+            amount = eval(amounts.join('+'))
             console.log(amount)
         })
         return {
-            amount:amount,
-            arramount:arramount,
+            amount: amount,
+            amounts: amounts,
         };
     }
     async getMintProof(){
         let url = 'wss://kovan.infura.io/ws/v3/be8f2596352a4ea2986472ec46f5c6e1'
         let abi = [{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"account","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"deadline","type":"uint256"},{"indexed":false,"internalType":"uint8","name":"v","type":"uint8"},{"indexed":false,"internalType":"bytes32","name":"r","type":"bytes32"},{"indexed":false,"internalType":"bytes32","name":"s","type":"bytes32"}],"name":"MintProof","type":"event"},{"inputs":[{"internalType":"address[]","name":"accounts","type":"address[]"},{"internalType":"uint256[]","name":"amounts","type":"uint256[]"},{"internalType":"uint256[]","name":"deadlines","type":"uint256[]"},{"internalType":"uint8[]","name":"vs","type":"uint8[]"},{"internalType":"bytes32[]","name":"rs","type":"bytes32[]"},{"internalType":"bytes32[]","name":"ss","type":"bytes32[]"}],"name":"addMintProof","outputs":[],"stateMutability":"nonpayable","type":"function"}];
-        let mintweb3 = new Web3(url);
-        let arrinfo;
-        console.log(mintweb3,this.account)
-        console.log(this.mintClaimAddress)
-        let toaccount = mintweb3.utils.toChecksumAddress(this.account)
-        console.log(toaccount)
-        let mintcontract = new mintweb3.eth.Contract(abi,this.mintClaimAddress)
-        let mintp = await mintcontract.getPastEvents('MintProof',{
-            filter:{account:toaccount},
-            fromBlock:0,
-        }).then(res=>{
-            console.log(res)
-            arrinfo = res
+        let mintWeb3 = new Web3(url);
+        let arrInfo;
+        let accountWeb3 = mintWeb3.utils.toChecksumAddress(this.account)
+        let mintContract = new mintWeb3.eth.Contract(abi,this.mintClaimAddress)
+        let mintProof = await mintContract.getPastEvents('MintProof',{
+            filter:{account: accountWeb3},
+            fromBlock: 0,
+        }).then(res => {
+            arrInfo = res
         })
-        let info = arrinfo[arrinfo.length-1]
-        console.log(info)
+        let info = arrInfo[arrInfo.length-1]
         let account = this.account;
         let amount = info.returnValues.amount;
         this.amount = amount;
@@ -372,17 +361,16 @@ class Chain {
         let s = info.returnValues.s;
         let v = info.returnValues.v;
         return {
-            account : account,
-            deadline : deadline,
-            amount:amount,
-            r : r,
-            s : s,
-            v : v,
+            account: account,
+            deadline: deadline,
+            amount: amount,
+            r: r,
+            s: s,
+            v: v,
         }
     }
     async mintDToken() {
         let info = await this.getMintProof();
-        
         let account = this.account;
         let amount = info.amount;
         let deadline = info.deadline;
@@ -482,7 +470,7 @@ class Chain {
                 this._readjson(this.abifiles.lToken),
                 this._readjson(this.abifiles.dToken)
             ]);
-            this.dTokenabi = dTokenAbi;
+            this.dTokenAbi = dTokenAbi;
             this.pool = new this.web3.eth.Contract(poolAbi, this.addresses.pool);
             this.bToken = new this.web3.eth.Contract(bTokenAbi, this.addresses.bToken);
             this.pToken = new this.web3.eth.Contract(pTokenAbi, this.addresses.pToken);
