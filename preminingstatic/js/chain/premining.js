@@ -289,114 +289,60 @@ $(function () {
         $('#liquidity-margin').val('');
         $('#liquidity-volume').val('')
     }
-    $('.onedown').click(function(){
-        $('.wp_context').eq(0).css({
-            display:'block',
+    $('.card_box').click(function(){
+        let index = $(this).index()
+        if(parseInt($(this).find('.wp_context').css('height'))>0){
+            $(this).find('.wp_context').animate({
+                height:'0px'
+            }, 200)
+            
+            $(this).find('.img_down').css({
+                display:'block',
+            })
+            $(this).find('.img_up').css({
+                display:'none',
+            })
+            return;
+        }
+        $(this).find('.wp_context').css({
+            display:'block'
         })
-        $('.img_down').eq(0).css({
+        switch (index) {
+            case 1:
+                $(this).find('.wp_context').animate({
+                    height:'110px'
+                }, 200)
+                break;
+            case 2:
+                $(this).find('.wp_context').animate({
+                    height:'135px'
+                }, 200)
+                break;
+            case 3:
+                $(this).find('.wp_context').animate({
+                    height:'160px'
+                }, 200)
+                break;
+            case 4:
+                $(this).find('.wp_context').animate({
+                    height:'90px'
+                }, 200)
+                break;
+            case 5:
+                $(this).find('.wp_context').animate({
+                    height:'110px'
+                }, 200)
+                break;
+            default:
+                break;
+        }
+        
+        $(this).find('.img_down').css({
             display:'none',
         })
-        $('.img_up').eq(0).css({
+        $(this).find('.img_up').css({
             display:'block',
         })
-    })
-    $('.towdown').click(function(){
-        $('.wp_context').eq(1).css({
-            display:'block',
-        })
-        $('.img_down').eq(1).css({
-            display:'none',
-        })
-        $('.img_up').eq(1).css({
-            display:'block',
-        })
-    })
-    $('.threedown').click(function(){
-        $('.wp_context').eq(2).css({
-            display:'block',
-        })
-        $('.img_down').eq(2).css({
-            display:'none',
-        })
-        $('.img_up').eq(2).css({
-            display:'block',
-        })
-    })
-    $('.fourdown').click(function(){
-        $('.wp_context').eq(3).css({
-            display:'block',
-        })
-        $('.img_down').eq(3).css({
-            display:'none',
-        })
-        $('.img_up').eq(3).css({
-            display:'block',
-        })
-    })
-    $('.fivedown').click(function(){
-        $('.wp_context').eq(4).css({
-            display:'block',
-        })
-        $('.img_down').eq(4).css({
-            display:'none',
-        })
-        $('.img_up').eq(4).css({
-            display:'block',
-        })
-    })
-    $('.oneup').click(function(){
-        $('.wp_context').eq(0).css({
-            display:'none',
-        })
-        $('.img_down').eq(0).css({
-            display:'block',
-        })
-        $('.img_up').eq(0).css({
-            display:'none',
-        })
-    })
-    $('.towup').click(function(){
-        $('.wp_context').eq(1).css({
-            display:'none',
-        })
-        $('.img_down').eq(1).css({
-            display:'block',
-        })
-        $('.img_up').eq(1).css({
-            display:'none',
-        })
-    })
-    $('.threeup').click(function(){
-        $('.wp_context').eq(2).css({
-            display:'none',
-        })
-        $('.img_down').eq(2).css({
-            display:'block',
-        })
-        $('.img_up').eq(2).css({
-            display:'none',
-        })
-    })
-    $('.fourup').click(function(){
-        $('.wp_context').eq(3).css({
-            display:'none',
-        })
-        $('.img_down').eq(3).css({
-            display:'block',
-        })
-        $('.img_up').eq(3).css({
-            display:'none',
-        })
-    })
-    $('.fiveup').click(function(){
-        $('.wp_context').eq(4).css({
-            display:'none',
-        })
-        $('.img_down').eq(4).css({
-            display:'block',
-        })
-        $('.img_up').eq(4).css({
-            display:'none',
-        })
+        
     })
 })

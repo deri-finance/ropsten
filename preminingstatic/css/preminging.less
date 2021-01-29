@@ -71,6 +71,7 @@
             background: #141924;
             border-radius: 2px;
             margin-top: 10px;
+            transition: height 1s;
             .box_title{
                 display: flex;
                 height: 80px;
@@ -84,22 +85,27 @@
                     display: block;
                 }
                 img{
-                    cursor: pointer;
+                    // width: 16px;
+                    // height: 16px;
                 }
             }
-            .box_title:hover{
-                background-color: #151B25;
-            }
+            
             .wp_context{
-                border-top: 1px solid #979797;
                 background-color: #141924;
+                overflow: hidden;
+                height: 0px;
                 width: 989px;
                 margin: 0 auto;
                 font-size: 16px;
                 display: none;
-                padding: 19px 0px 66px 0px;
+                box-sizing: border-box;
+                // padding: 19px 0px 66px 0px;
             }
             
+        }
+        .card_box:hover{
+            background-color: #151B25;
+            cursor: pointer;
         }
     }
 }

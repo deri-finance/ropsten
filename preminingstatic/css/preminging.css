@@ -88,6 +88,7 @@
   background: #141924;
   border-radius: 2px;
   margin-top: 10px;
+  transition: height 1s;
 }
 #liquidity .faq .card_box .box_title {
   display: flex;
@@ -102,18 +103,17 @@
 #liquidity .faq .card_box .box_title .img_down {
   display: block;
 }
-#liquidity .faq .card_box .box_title img {
-  cursor: pointer;
-}
-#liquidity .faq .card_box .box_title:hover {
-  background-color: #151B25;
-}
 #liquidity .faq .card_box .wp_context {
-  border-top: 1px solid #979797;
   background-color: #141924;
+  overflow: hidden;
+  height: 0px;
   width: 989px;
   margin: 0 auto;
   font-size: 16px;
   display: none;
-  padding: 19px 0px 66px 0px;
+  box-sizing: border-box;
+}
+#liquidity .faq .card_box:hover {
+  background-color: #151B25;
+  cursor: pointer;
 }

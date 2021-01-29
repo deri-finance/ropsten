@@ -324,14 +324,12 @@ class Chain {
             },
             fromBlock: 0
         }, function(err){
-            console.log(err)
         }).then(res => {
             res.map(item => {
                 item.returnValues.amount = item.returnValues.amount / (10**18)
                 amounts.push(item.returnValues.amount)
             })
             amount = eval(amounts.join('+'))
-            console.log(amount)
         })
         return {
             amount: amount,
