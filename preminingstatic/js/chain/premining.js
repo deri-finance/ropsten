@@ -32,7 +32,7 @@ $(function () {
                     getBlock(contract.addresses.pool)
                     setInterval(function(){
                         getBlock(contract.addresses.pool)
-                    },60000)
+                    },20000)
                     setInterval(function () {
                         deri(account,contract.addresses.pool)
                     },60000)

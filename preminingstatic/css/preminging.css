@@ -105,6 +105,9 @@
 #liquidity .faq .card_box .box_title img {
   cursor: pointer;
 }
+#liquidity .faq .card_box .box_title:hover {
+  background-color: #151B25;
+}
 #liquidity .faq .card_box .wp_context {
   border-top: 1px solid #979797;
   background-color: #141924;
