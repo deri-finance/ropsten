@@ -109,7 +109,8 @@ $(function () {
                             let block = mblock-sblock;
                             $('.block').text(block)
                         }
-                    }
+                    },
+                    
                 })
             }
         })
