@@ -450,7 +450,7 @@ class Chain {
     }
 
     async _readjson(filename) {
-        let response = await fetch(`preminingstatic/js/chain/config/${filename}`);
+        let response = await fetch(`stakingstatic/js/chain/config/${filename}`);
         return await response.json();
     }
 
