@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>premining</title>
+    <title>staking</title>
     <link rel="icon" href="./stakingstatic/favicon.ico">
 
     <link rel="stylesheet" href="stakingstatic/other/bootstrap-4.5.3-dist/css/bootstrap.min.css">
@@ -183,7 +183,7 @@
                         <span class="text-mute symbol">--</span>
                     </div>
                     <div class="input-group mb-3 mt-4">
-                        <input type="text" class="form-control" placeholder="liquidity volume"
+                        <input type="text" class="form-control" placeholder="staking volume"
                             aria-label="liquidity-margin" aria-describedby="liquidity-margin" id="liquidity-margin">
                         <div class="input-group-append">
                             <span class="input-group-text symbol">--</span>
@@ -192,7 +192,7 @@
                             <button type="button" style="display: none;color: #fff;" class="add" id="addLiquidityButton">
                                 <span class="spinner spinner-border spinner-border-sm" role="status" aria-hidden="true"
                                     style="display: none;"></span>
-                                ADD LIQUIDITY
+                                    STAKE
                             </button>
                             <button type="button" class="add" id="Unlock" style="color: #fff">
                                 <span class="spinner spinner-border spinner-border-sm" role="status" aria-hidden="true"
@@ -201,20 +201,18 @@
                             </button>
                         </div>
                     </div>
-                    <div class="text-mute" style="margin-top: 64px;">My Liquidity Shares In Pool: <span
+                    <div class="text-mute" style="margin-top: 64px;">My Staking In Pool: <span
                             class="text-mute my-liquidity">--</span>
                     </div>
                     <div class="input-group mb-3 mt-4">
-                        <input type="text" class="form-control" placeholder="liquidity volume"
+                        <input type="text" class="form-control" placeholder="staking volume"
                             aria-label="liquidity-volume" aria-describedby="liquidity-volume" id="liquidity-volume">
-                        <div class="input-group-append">
-                            <span class="input-group-text" id="">LiquidityShares</span>
-                        </div>
+                        
                         <div class="w-100  mt-4 mb-2">
                             <button type="button" class="remove" id="removeLiquidityButton" style="color: #fff">
                                 <span class="spinner spinner-border spinner-border-sm" role="status" aria-hidden="true"
                                     style="display: none;"></span>
-                                REMOVE LIQUIDITY
+                                UNSTAKE
                             </button>
                         </div>
                     </div>
@@ -229,16 +227,10 @@
                 <div class="right">
                     <div class="carone">
                         <p class="card-text">
-                            <span class="key text-muted">Pool Total Liquidity</span>
+                            <span class="key text-muted">Total Staking</span>
                             <span class="symbol float-right "></span>
                             <span class="pooltotalliquidity float-right text-mute" id="total-liquidity"
                                 style="margin-right:3px">---</span>
-                        </p>
-                        
-                        <p class="card-text">
-                            <span class="key text-muted">Liquidity Share Value</span>
-                            <span class="symbol float-right "></span>
-                            <span class="liquiditysharevalue float-right text-mute" style="margin-right:3px"> --- </span>
                         </p>
                         <p class="card-text">
                             <span class="key text-muted">Current Epoch Remaining Time</span>
@@ -255,7 +247,7 @@
                     </div>
                     <div class="cartwo">
                         <p class="card-text">
-                            <span class="key text-muted">My Liquidity Shares</span>
+                            <span class="key text-muted">My Staking</span>
                             <span class="value float-right text-mute my-liquidity">---</span>
                         </p>
                         <p class="card-text">
