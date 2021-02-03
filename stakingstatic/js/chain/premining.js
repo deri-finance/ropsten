@@ -171,9 +171,10 @@ $(function () {
     }
     function getLiquidityInfo(){
         contract.getLiquidityInfo().then(res=>{
-            maxRemovableShares=res.shares;
-            let liquidity = +res.shares;
+            maxRemovableShares = res.shares;
+            let liquidity = res.shares;
             let NetLiquidity = +res.poolLiquidity;
+            console.log(res)
             $('#total-liquidity').text(NetLiquidity)
             $('.my-liquidity').text(liquidity)
             if(res.shareValue=='NaN'){
@@ -188,7 +189,7 @@ $(function () {
     }
     function getWalletBalance(){
         contract.getWalletBalance().then(res=>{
-            let balance = +res;
+            let balance = res;
             $('#my-balance').text(balance)
         }).catch(err=>{
             console.log(err)
