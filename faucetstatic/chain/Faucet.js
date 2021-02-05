@@ -45,7 +45,7 @@ $(function () {
                     console.log(res)
                     if (!res.success) {
                         enableButton(btn)
-                        return;
+                        return; 
                     }
                     enableButton(btn)
                     alert('You  get 10000 USDT')
@@ -63,7 +63,6 @@ $(function () {
         disableButton(btn)
         let id = 1;
         if (address) {
-            if (res.success) {
                 contract.initialize(id).then(() => {
                     contract.mint(address, 10000).then(res => {
                         console.log(res)
@@ -78,7 +77,7 @@ $(function () {
                         console.log(err)
                     })
                 });
-            }
+            
         }
 
     }
