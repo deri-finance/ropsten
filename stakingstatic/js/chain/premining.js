@@ -174,7 +174,6 @@ $(function () {
             maxRemovableShares = res.shares;
             let liquidity = res.shares;
             let NetLiquidity = +res.poolLiquidity;
-            console.log(res)
             $('#total-liquidity').text(NetLiquidity)
             $('.my-liquidity').text(liquidity)
             if(res.shareValue=='NaN'){

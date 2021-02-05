@@ -98,7 +98,7 @@ class Chain {
     }
 
     async initialize(index=0) {
-        console.log(index)
+        
         await this._initializeContracts(index);
         await this._initializeParameters();
         await Promise.all([
