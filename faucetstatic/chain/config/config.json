@@ -19,6 +19,18 @@
             "bToken": "0xc317Ec6e7c34038eDdc5B40B4d0a99dF2410d507",
             "pToken": "0x3eFA50AdcF519527da1891cC59E446D092D147b3",
             "lToken": "0xD4e97A4B24fb21ED44A7955a4D50Fb0567dd1882"
+        },
+        {
+            "pool": "0xBA5805E672377339CBa0Dc7bCe1fdA0349d73Be8",
+            "bToken": "0xF2a86DB8BD86d9f12E1713e74fABdC455639617d",
+            "pToken": "0x3eFA50AdcF519527da1891cC59E446D092D147b3",
+            "lToken": "0xF61971D7B6191ebaA9B56cb309FBb135d2fd220a"
+        },
+        {
+            "pool": "0x3125CC899489159ca60BB3490136dE6D208E3a53",
+            "bToken": "0x77e27DF02b290e5680A5B00a88E09E612265AFDE",
+            "pToken": "0x3eFA50AdcF519527da1891cC59E446D092D147b3",
+            "lToken": "0x6778457885BbEf271F36ba44a04303490861e311"
         }
     ],
     "abifiles": {

@@ -40,7 +40,7 @@ $(function () {
         disableButton(btn)
         let id = 0;
         if (address) {
-            contract.initialize(id, 0).then(() => {
+            contract.initialize(id).then(() => {
                 contract.mint(address, 10000).then(res => {
                     console.log(res)
                     if (!res.success) {
@@ -64,7 +64,7 @@ $(function () {
         let id = 1;
         if (address) {
             if (res.success) {
-                contract.initialize(id, 0).then(() => {
+                contract.initialize(id).then(() => {
                     contract.mint(address, 10000).then(res => {
                         console.log(res)
                         if (!res.success) {
@@ -107,7 +107,7 @@ $(function () {
     function addBn() {
         let btn = $('#obtainBn')
         disableButton(btn)
-        let id = 2;
+        let id = 3;
         if (address) {
             contract.initialize(id).then(() => {
                 contract.mint(address, 10000).then(res => {
@@ -129,7 +129,7 @@ $(function () {
     function addH() {
         let btn = $('#obtainH')
         disableButton(btn)
-        let id = 2;
+        let id = 4;
         if (address) {
             contract.initialize(id).then(() => {
                 contract.mint(address, 10000).then(res => {
